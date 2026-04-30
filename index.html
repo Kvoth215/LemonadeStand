@@ -1,0 +1,962 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Lemonade Stand Pro — BCIT Business Simulation</title>
+<style>
+:root{--cr:#FFFBF0;--yl:#FAEEDA;--y:#EF9F27;--yd:#BA7517;--br:#633806;--bd:#412402;--gn:#2D7A1F;--gl:#EAF3DE;--rd:#B83030;--rl:#FCEBEB;--bl:#1A5FA8;--bll:#E6F1FB;--pu:#4A3BA0;--pl:#EEEDFE;--gr:#888780;--grl:#F1EFE8;--bdr:rgba(0,0,0,0.12);--r:14px;--rs:10px}
+*{box-sizing:border-box;margin:0;padding:0}
+html{font-size:18px}
+body{font-family:Georgia,serif;background:var(--cr);color:var(--bd);min-height:100vh;font-size:18px}
+#app{max-width:720px;margin:0 auto;padding:.8rem 1rem 4rem}
+.scr{display:none}.scr.on{display:block}
+.ghdr{background:var(--y);border-radius:var(--r);padding:.75rem 1.2rem;display:flex;justify-content:space-between;align-items:center;margin-bottom:1rem;position:sticky;top:.4rem;z-index:20;border:1.5px solid var(--yd);box-shadow:0 2px 8px rgba(0,0,0,.12)}
+.ghdr-nm{font-size:17px;font-weight:bold;color:var(--bd)}.ghdr-sb{font-size:13px;color:var(--br);font-family:sans-serif}
+.cash-tag{background:var(--bd);color:var(--yl);padding:7px 15px;border-radius:var(--rs);font-size:17px;font-weight:bold;font-family:monospace}
+.card{background:white;border:1px solid var(--bdr);border-radius:var(--r);padding:1.1rem 1.3rem;margin-bottom:.9rem}
+.cam{background:var(--yl);border-color:#FAC775}.cgu{background:var(--gl);border-color:#C0DD97}
+.crd{background:var(--rl);border-color:#F7C1C1}.cbl{background:var(--bll);border-color:#B5D4F4}
+.slab{font-size:13px;font-weight:bold;color:var(--gr);text-transform:uppercase;letter-spacing:.08em;margin-bottom:8px;font-family:sans-serif}
+.btn{display:inline-block;padding:13px 22px;border:2px solid var(--br);border-radius:var(--rs);background:white;color:var(--bd);font-size:17px;font-weight:bold;cursor:pointer;font-family:Georgia,serif;transition:all .12s;text-align:center}
+.btn:hover{background:var(--yl)}.btn:active{transform:scale(.98)}
+.btnp{background:var(--bd);color:var(--yl);border-color:var(--bd)}.btnp:hover{background:var(--br)}
+.btny{background:var(--y);color:var(--bd);border-color:var(--yd)}.btny:hover{background:var(--yd);color:white}
+.btnf{display:block;width:100%;margin-top:.6rem;font-size:18px;padding:15px}
+.btnd{opacity:.38;cursor:not-allowed;pointer-events:none}
+.tbtn{padding:9px 16px;border:1.5px solid var(--bdr);border-radius:var(--rs);background:white;color:var(--bd);font-size:15px;cursor:pointer;font-family:Georgia,serif;transition:all .1s}
+.tbtn:hover{border-color:var(--y);background:var(--yl)}.tbtn.sl{background:var(--bd);color:var(--yl);border-color:var(--bd)}
+.tgrp{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:.6rem}
+.ctrl-row{display:flex;align-items:center;gap:12px;margin-bottom:.7rem}
+.ctrl-lb{font-size:16px;font-weight:bold;min-width:110px;color:var(--br)}
+.ctrl-v{font-size:18px;font-weight:bold;min-width:68px;text-align:right;color:var(--bd);font-family:monospace}
+input[type=range]{flex:1;accent-color:var(--yd);height:8px}
+.hint{font-size:14px;color:var(--gr);line-height:1.6;margin-top:4px;font-family:sans-serif}
+.sr{display:flex;justify-content:space-between;align-items:center;padding:9px 0;border-bottom:1px solid rgba(0,0,0,.07);font-size:16px}
+.sr:last-child{border-bottom:none}.sk{color:var(--gr);font-family:sans-serif}.sv{font-weight:bold}
+.stot{display:flex;justify-content:space-between;align-items:center;padding:12px 0 0;margin-top:8px;border-top:2px solid var(--bdr);font-size:18px;font-weight:bold}
+.gn{color:var(--gn)}.rd{color:var(--rd)}.am{color:var(--br)}
+.mg{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px;margin:.8rem 0}
+.mc{background:var(--grl);border-radius:var(--rs);padding:.8rem 1rem;text-align:center}
+.mlb{font-size:13px;color:var(--gr);margin-bottom:5px;font-family:sans-serif}
+.mv{font-size:22px;font-weight:bold;font-family:monospace}
+.dpb{display:flex;gap:3px;margin-bottom:.8rem}
+.dp{flex:1;height:8px;border-radius:4px;background:var(--bdr)}.dp.dn{background:var(--gn)}.dp.nw{background:var(--y)}
+.rwrap{background:var(--grl);border-radius:999px;height:10px;overflow:hidden;margin:6px 0}
+.rfill{height:100%;border-radius:999px;background:var(--y);transition:width .35s}
+.wbg{display:inline-flex;align-items:center;gap:6px;padding:6px 14px;border-radius:999px;font-size:15px;font-weight:bold;background:var(--bll);color:var(--bl);border:1px solid #B5D4F4;font-family:sans-serif}
+.evb{background:var(--yl);border:1.5px solid var(--yd);border-left:5px solid var(--yd);border-radius:var(--rs);padding:.9rem 1.1rem;margin-bottom:.8rem}
+.evt{font-size:18px;font-weight:bold;color:var(--bd);margin-bottom:6px}.evd{font-size:15px;color:var(--br);line-height:1.65;font-family:sans-serif}
+.lcard{background:var(--pl);border:1px solid #CECBF6;border-radius:var(--r);padding:1.1rem 1.3rem;margin-bottom:.8rem}
+.ltag{font-size:13px;font-weight:bold;color:#7F77DD;text-transform:uppercase;letter-spacing:.06em;margin-bottom:6px;font-family:sans-serif}
+.lterm{font-size:19px;font-weight:bold;color:#3C3489;margin-bottom:6px}
+.lbod{font-size:15px;color:#534AB7;line-height:1.75;font-family:sans-serif}
+.ltech{font-size:14px;color:#7F77DD;margin-top:10px;font-style:italic;font-family:sans-serif}
+.cch{border:2px solid var(--bdr);border-radius:var(--r);padding:1rem 1.1rem;margin-bottom:.7rem;cursor:pointer;transition:all .13s}
+.cch:hover{border-color:var(--yd);background:var(--yl)}
+.ccl{font-size:17px;font-weight:bold;color:var(--bd);margin-bottom:5px}.ccd{font-size:15px;color:var(--br);line-height:1.65;font-family:sans-serif}
+.bign{font-size:32px;font-weight:bold;text-align:center;margin:.5rem 0;font-family:monospace}
+.grade{font-size:80px;font-weight:bold;text-align:center;line-height:1;margin:.5rem 0}
+.warn{background:var(--rl);border:1px solid #F7C1C1;border-radius:var(--rs);padding:.5rem .9rem;font-size:14px;color:var(--rd);margin-top:6px;font-family:sans-serif}
+.chips{display:flex;flex-wrap:wrap;gap:6px;margin-top:8px}
+.chip{padding:5px 12px;border-radius:999px;font-size:13px;font-weight:bold;font-family:sans-serif}
+.chg{background:var(--gl);color:var(--gn);border:1px solid #C0DD97}.chr{background:var(--rl);color:var(--rd);border:1px solid #F7C1C1}
+.chb{background:var(--bll);color:var(--bl);border:1px solid #B5D4F4}.cha{background:var(--yl);color:var(--br);border:1px solid #FAC775}
+.lb-tbl{width:100%;border-collapse:collapse;font-size:15px;font-family:sans-serif}
+.lb-tbl th{text-align:left;padding:9px 10px;border-bottom:2px solid var(--bdr);font-size:13px;color:var(--gr);text-transform:uppercase;letter-spacing:.05em}
+.lb-tbl td{padding:10px;border-bottom:1px solid var(--bdr);vertical-align:middle}
+.lb-tbl tr:hover td{background:var(--yl)}
+.hero{text-align:center;padding:1.8rem 1rem;background:var(--yl);border:1px solid #FAC775;border-radius:var(--r);margin-bottom:.9rem}
+.ht{font-size:28px;font-weight:bold;color:var(--bd);margin-bottom:6px}.hs{font-size:15px;color:var(--br);font-family:sans-serif}
+.dgrid{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-bottom:.7rem}
+.dcard{border:2px solid var(--bdr);border-radius:var(--r);padding:.9rem;cursor:pointer;transition:all .13s;text-align:center}
+.dcard:hover{border-color:var(--y)}.dcard.sl{border-color:var(--bd);background:var(--yl)}
+.ddays{font-size:28px;font-weight:bold;color:var(--br)}.dname{font-size:16px;font-weight:bold;margin-bottom:3px}
+.ddsc{font-size:12px;color:var(--gr);line-height:1.5;font-family:sans-serif}
+.lgrid{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-bottom:.7rem}
+.loanc{border:2px solid var(--bdr);border-radius:var(--r);padding:.8rem;cursor:pointer;text-align:center;transition:all .13s}
+.loanc:hover{border-color:var(--y)}.loanc.sl{border-color:var(--bd);background:var(--yl)}
+.lamt{font-size:24px;font-weight:bold;color:var(--bd)}.lfee{font-size:12px;color:var(--rd);font-family:sans-serif;margin-top:3px}
+input[type=text]{width:100%;padding:12px 14px;border:1.5px solid var(--bdr);border-radius:var(--rs);font-size:17px;font-family:Georgia,serif;background:white;color:var(--bd);margin-bottom:.7rem;outline:none}
+input[type=text]:focus{border-color:var(--yd)}
+.row2{display:flex;gap:10px;margin-bottom:.6rem}.row2 .btn{flex:1}
+.scene-wrap{margin:.4rem 0 .7rem;text-align:center}
+.scene-wrap svg{width:100%;max-width:340px;height:auto}
+.hbar-wrap{display:flex;align-items:flex-end;gap:3px;height:80px;margin:.5rem 0;padding:0 2px}
+.hbar{flex:1;min-width:8px;border-radius:2px 2px 0 0;position:relative;cursor:default}
+.hbar[title]:hover::after{content:attr(title);position:absolute;bottom:calc(100% + 4px);left:50%;transform:translateX(-50%);background:#333;color:white;padding:3px 8px;border-radius:4px;font-size:12px;white-space:nowrap;font-family:sans-serif;pointer-events:none;z-index:99}
+.quiz{background:#EEEDFE;border:1px solid #CECBF6;border-radius:var(--rs);padding:.85rem 1.1rem;margin-top:.7rem}
+.qtxt{font-size:15px;color:#3C3489;margin-bottom:.6rem;font-family:sans-serif;font-weight:bold}
+.qa{display:flex;flex-wrap:wrap;gap:8px}
+.qa button{padding:8px 16px;border:1px solid #CECBF6;border-radius:999px;background:white;color:#4A3BA0;font-size:14px;cursor:pointer;font-family:sans-serif;transition:all .1s}
+.qa button:hover{background:#EEEDFE}.qa button.qr{background:#EAF3DE;border-color:#C0DD97;color:#2D7A1F;pointer-events:none}
+.qa button.qw{background:#FCEBEB;border-color:#F7C1C1;color:#B83030;pointer-events:none}
+.demand-alert-hd{font-size:17px;font-weight:bold;color:#E65100;margin-bottom:8px}
+.demand-alert-body{font-size:15px;color:#4E342E;line-height:1.75;font-family:sans-serif}
+.demand-alert-stat{display:flex;justify-content:space-between;align-items:center;padding:6px 0;border-bottom:1px solid rgba(230,81,0,.2);font-size:15px}
+.demand-alert-stat:last-child{border-bottom:none;font-weight:bold;padding-top:8px}
+.demand-alert-k{color:#795548;font-family:sans-serif}
+.demand-alert-v{font-weight:bold;font-family:monospace}
+.qexp{margin-top:12px;padding:12px 14px;background:white;border-left:4px solid #7F77DD;border-radius:0 var(--rs) var(--rs) 0;font-size:15px;font-family:sans-serif;color:#333;line-height:1.7}
+.qexp .qexp-hd{font-weight:bold;color:#3C3489;margin-bottom:4px;font-size:16px}
+@media(max-width:500px){
+  html{font-size:17px}
+  .dgrid{grid-template-columns:1fr}
+  .lgrid{grid-template-columns:1fr}
+  .mg{grid-template-columns:repeat(3,1fr)}
+  .mv{font-size:18px}
+  .ghdr-sb{display:none}
+  .scene-wrap svg{max-width:100%}
+}
+@media print{
+body{background:white}#app{max-width:100%;padding:0}
+.nopr{display:none!important}.pronly{display:block!important}
+.scr{display:none!important}#s-ws{display:block!important}
+}
+.pronly{display:none}
+</style>
+</head>
+<body>
+<div id="err-box" style="display:none;position:fixed;top:0;left:0;right:0;background:#B83030;color:white;padding:1rem;font-family:sans-serif;font-size:13px;z-index:9999;word-break:break-all"></div>
+<div id="app">
+<div class="ghdr nopr" id="ghdr" style="display:none">
+  <div><div class="ghdr-nm" id="ghdr-nm">Lemonade Stand Pro</div><div class="ghdr-sb" id="ghdr-sb">Day 1</div></div>
+  <div style="display:flex;gap:8px;align-items:center">
+    <div id="ghdr-rep" style="display:none;font-size:11px;color:var(--br);font-family:sans-serif;text-align:right">Rep<br><b id="ghdr-rv">50</b>/100</div>
+    <div class="cash-tag" id="ghdr-cash">$20.00</div>
+  </div>
+</div>
+<div class="scr on" id="s-welcome">
+  <div class="hero"><div id="sc-w" class="scene-wrap" style="min-height:0"></div><div class="ht">🍋 Lemonade Stand Pro</div><div class="hs">BCIT Business Simulation · Located in Langhorne PA</div></div>
+  <div class="card"><div class="slab">Choose difficulty</div>
+    <div class="dgrid">
+      <div class="dcard sl" onclick="pickD('easy',this)"><div class="ddays">7</div><div style="font-size:9px;color:var(--gr);font-family:sans-serif">days</div><div class="dname">Easy</div><div class="ddsc">No overhead · Stable costs · Learn the basics</div></div>
+      <div class="dcard" onclick="pickD('standard',this)"><div class="ddays">14</div><div style="font-size:9px;color:var(--gr);font-family:sans-serif">days</div><div class="dname">Standard</div><div class="ddsc">$1/day overhead · Reputation · Full events</div></div>
+      <div class="dcard" onclick="pickD('hard',this)"><div class="ddays">21</div><div style="font-size:9px;color:var(--gr);font-family:sans-serif">days</div><div class="dname">Hard</div><div class="ddsc">Loans · $2/day overhead · Spoilage · MBA</div></div>
+    </div>
+    <div id="d-expl" style="font-size:14px;color:var(--br);font-family:sans-serif;line-height:1.65;padding:.3rem .2rem"></div>
+  </div>
+  <div class="card"><div class="slab">Your info</div>
+    <input type="text" id="i-name" placeholder="Your name (e.g., Alex Johnson)" maxlength="40">
+    <input type="text" id="i-class" placeholder="Class period (e.g., 3rd Period, Block B)" maxlength="30">
+    <input type="text" id="i-stand" placeholder="Stand name (e.g., Squeeze Empire, The Lemon Lab)" maxlength="35">
+  </div>
+  <div class="card cbl" id="loan-sec" style="display:none">
+    <div class="slab">Hard mode — optional startup loan</div>
+    <div style="font-size:13px;color:var(--bl);margin-bottom:10px;font-family:sans-serif">Borrow now for extra buying power. Repay with interest from your final cash balance.</div>
+    <div class="lgrid">
+      <div class="loanc sl" onclick="pickL(0,this)"><div class="lamt">$0</div><div class="lfee">No loan</div></div>
+      <div class="loanc" onclick="pickL(25,this)"><div class="lamt">$25</div><div class="lfee">+$3.75 interest → repay $28.75</div></div>
+      <div class="loanc" onclick="pickL(50,this)"><div class="lamt">$50</div><div class="lfee">+$10 interest → repay $60.00</div></div>
+    </div>
+  </div>
+  <div class="card cam"><div class="slab">Concepts you will practice</div><div id="concept-list" style="font-size:15px;color:var(--br);line-height:1.9;font-family:sans-serif"></div></div>
+  <div class="row2">
+    <button class="btn btnp" onclick="startGame()" style="flex:2;font-size:16px;padding:12px">Start Business →</button>
+    <button class="btn" onclick="goLB()">Leaderboard 🏆</button>
+  </div>
+</div>
+<div class="scr" id="s-plan">
+  <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:.4rem">
+    <div style="font-size:22px;font-weight:bold" id="p-title">Day 1</div>
+    <div class="wbg" id="p-fc">Loading...</div>
+  </div>
+  <div class="dpb" id="p-bar"></div>
+  <div id="p-scene" class="scene-wrap"></div>
+  <div id="p-mods" style="display:none;margin-bottom:.6rem"><div class="slab">Active effects</div><div class="chips" id="p-chips"></div></div>
+  <div class="card cam"><div class="slab">Zesty says 🍋</div><div id="p-tip" style="font-size:16px;color:var(--bd);line-height:1.75"></div></div>
+  <div class="card" id="p-rep-card" style="display:none">
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:3px"><div class="slab" style="margin:0">Reputation</div><div style="font-size:13px;font-weight:bold;font-family:monospace" id="p-repv">50/100</div></div>
+    <div class="rwrap"><div class="rfill" id="p-repb" style="width:50%"></div></div>
+    <div class="hint">Reputation multiplies daily customer traffic.</div>
+  </div>
+  <div class="card"><div class="slab">Production — cups to make?</div>
+    <div class="ctrl-row"><span class="ctrl-lb">Cups to make</span><input type="range" id="sl-cups" min="5" max="150" step="5" value="20" oninput="chCups()"><span class="ctrl-v" id="v-cups">20</span></div>
+    <div class="hint">Ingredients cost <span id="ic-disp">$0.10</span>/cup. Unsold cups = wasted money.</div>
+    <div class="hint rd" id="spoil-hint" style="display:none">Hard: cups remaining >5 at day end spoil overnight.</div>
+  </div>
+  <div class="card"><div class="slab">Price per cup</div>
+    <div class="ctrl-row"><span class="ctrl-lb">Price</span><input type="range" id="sl-price" min="0" max="9" step="1" value="3" oninput="chPrice()"><span class="ctrl-v" id="v-price">$1.00</span></div>
+    <div class="hint" id="price-hint">Balanced pricing — good demand expected.</div>
+  </div>
+  <div class="card"><div class="slab">Advertising</div>
+    <div class="tgrp" id="ad-btns">
+      <button class="tbtn sl" onclick="pickAd(0,this)">None ($0)</button>
+      <button class="tbtn" onclick="pickAd(1,this)">Flyers ($1)</button>
+      <button class="tbtn" onclick="pickAd(2,this)">Signs ($2)</button>
+      <button class="tbtn" onclick="pickAd(5,this)">Social ($5)</button>
+      <button class="tbtn" onclick="pickAd(10,this)">Full blast ($10)</button>
+    </div>
+    <div class="hint" id="ad-hint">No advertising. Walk-by traffic only.</div>
+  </div>
+  <div class="card" id="spec-card" style="display:none"><div class="slab">Special options</div>
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px">
+      <div><div style="font-size:14px;font-weight:bold">Free samples (5 cups)</div><div class="hint">Costs <span id="samp-c">$0.50</span> — boosts rep +8 and awareness for 2 days</div></div>
+      <button class="tbtn" id="samp-btn" onclick="togSamp()">Off</button>
+    </div>
+    <div id="qual-opt" style="display:none;border-top:1px solid var(--bdr);padding-top:8px;margin-top:4px">
+      <div style="display:flex;justify-content:space-between;align-items:center">
+        <div><div style="font-size:14px;font-weight:bold">Premium quality mix</div><div class="hint">+$0.03/cup — boosts demand 12% and rep +5/day</div></div>
+        <button class="tbtn" id="qual-btn" onclick="togQual()">Off</button>
+      </div>
+    </div>
+  </div>
+  <div class="card"><div class="slab">Cost preview</div><div id="cost-rows"></div>
+    <div class="stot"><span>Cash after opening costs</span><span id="cash-aft" class="am">$18.00</span></div>
+    <div class="warn" id="p-warn" style="display:none">You cannot afford this plan. Reduce cups or cut advertising.</div>
+  </div>
+  <button class="btn btnp btnf nopr" id="open-btn" onclick="openBiz()">🍋 Open for Business!</button>
+</div>
+<div class="scr" id="s-dec">
+  <div id="dec-scene" class="scene-wrap"></div>
+  <div style="font-size:22px;font-weight:bold;margin-bottom:.7rem">⚡ Decision Required!</div>
+  <div class="evb"><div class="evt" id="dec-ttl"></div><div class="evd" id="dec-dsc"></div></div>
+  <div class="slab">What do you do?</div><div id="dec-choices"></div>
+  <div class="lcard" style="margin-top:.6rem"><div class="ltag">Business concept at stake</div><div class="lbod" id="dec-les"></div></div>
+  <div class="quiz" id="dec-quiz" style="display:none"><div class="qtxt" id="dq-txt"></div><div class="qa" id="dq-a"></div><div class="qexp" id="dq-exp" style="display:none"></div></div>
+</div>
+<div class="scr" id="s-res">
+  <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:.4rem">
+    <div style="font-size:22px;font-weight:bold" id="r-title">Day 1 Results</div><div class="wbg" id="r-wx"></div>
+  </div>
+  <div class="dpb" id="r-bar"></div>
+  <div id="r-scene" class="scene-wrap"></div>
+  <div class="card cam"><div class="slab">Zesty's verdict 🍋</div><div id="r-zesty" style="font-size:16px;color:var(--bd);line-height:1.75"></div></div>
+  <div id="r-evwrap"></div>
+  <div id="r-demand-alert" style="display:none;background:#FFF3E0;border:2px solid #E65100;border-left:6px solid #E65100;border-radius:var(--rs);padding:1rem 1.2rem;margin-bottom:.8rem"></div>
+  <div class="card"><div class="slab">What happened</div>
+    <div class="sr"><span class="sk">Weather</span><span class="sv" id="r-wxn"></span></div>
+    <div class="sr"><span class="sk">Customers who showed up</span><span class="sv" id="r-cust"></span></div>
+    <div class="sr"><span class="sk">Cups sold</span><span class="sv gn" id="r-sold"></span></div>
+    <div class="sr" id="r-unr" style="display:none"><span class="sk">Cups wasted / unsold</span><span class="sv rd" id="r-un"></span></div>
+    <div class="sr" id="r-spr" style="display:none"><span class="sk">Cups spoiled overnight</span><span class="sv rd" id="r-sp"></span></div>
+  </div>
+  <div class="mg">
+    <div class="mc"><div class="mlb">Revenue</div><div class="mv gn" id="r-rev">$0</div></div>
+    <div class="mc"><div class="mlb">Costs</div><div class="mv rd" id="r-cost">$0</div></div>
+    <div class="mc"><div class="mlb">Profit</div><div class="mv" id="r-profit">$0</div></div>
+  </div>
+  <div class="card" style="text-align:center"><div class="slab">Cash on hand</div><div class="bign am" id="r-cash">$20.00</div></div>
+  <div class="card" id="r-repc" style="display:none">
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:3px"><div class="slab" style="margin:0">Reputation</div><div style="font-size:13px;font-weight:bold;font-family:monospace" id="r-repv">50/100</div></div>
+    <div class="rwrap"><div class="rfill" id="r-repb" style="width:50%"></div></div>
+    <div style="font-size:12px;font-family:sans-serif;color:var(--gr);margin-top:4px" id="r-repch"></div>
+  </div>
+  <div id="r-hist" style="display:none;margin-bottom:.7rem">
+    <div class="slab">Profit history</div><div class="hbar-wrap" id="hist-bars"></div>
+    <div style="font-size:10px;color:var(--gr);font-family:sans-serif;text-align:center;margin-top:3px">Green = profit · Red = loss · Hover for details</div>
+  </div>
+  <div class="lcard"><div class="ltag">Today's business lesson</div><div class="lterm" id="r-lterm"></div><div class="lbod" id="r-lbod"></div><div class="ltech" id="r-ltech"></div></div>
+  <div class="quiz" id="r-quiz"><div class="qtxt" id="rq-txt"></div><div class="qa" id="rq-a"></div><div class="qexp" id="rq-exp" style="display:none"></div></div>
+  <div id="quiz-gate" style="background:var(--yl);border:2px dashed var(--yd);border-radius:var(--rs);padding:12px 16px;text-align:center;margin-top:.6rem;font-family:sans-serif;font-size:15px;color:var(--br)">
+  📝 <b>Answer the quiz question above to unlock the next day</b>
+</div>
+<button class="btn btnp btnf btnd nopr" id="nxt-btn" onclick="nextDay()" disabled>Next Day →</button>
+</div>
+<div class="scr" id="s-over">
+  <div id="ov-scene" class="scene-wrap"></div>
+  <div class="card cam" style="text-align:center;padding:1.4rem">
+    <div class="slab">Final grade — <span id="fo-stand"></span></div>
+    <div class="grade" id="fo-grade">A</div>
+    <div style="font-size:22px;font-weight:bold;color:var(--bd)" id="fo-lbl">Business Legend</div>
+  </div>
+  <div class="card cam"><div class="slab">Zesty's final verdict</div><div id="fo-zesty" style="font-size:16px;color:var(--bd);line-height:1.75"></div></div>
+  <div class="card">
+    <div class="slab">Business report — <span id="fo-nm"></span> · <span id="fo-cl"></span></div>
+    <div class="sr"><span class="sk">Difficulty</span><span class="sv" id="fo-diff"></span></div>
+    <div class="sr"><span class="sk">Days in business</span><span class="sv" id="fo-days"></span></div>
+    <div class="sr"><span class="sk">Starting capital</span><span class="sv">$20.00</span></div>
+    <div class="sr" id="fo-lrow" style="display:none"><span class="sk">Startup loan taken</span><span class="sv rd" id="fo-ltk"></span></div>
+    <div class="sr" id="fo-rrow" style="display:none"><span class="sk">Loan repaid (+interest)</span><span class="sv rd" id="fo-lrp"></span></div>
+    <div class="sr"><span class="sk">Total revenue earned</span><span class="sv gn" id="fo-rev"></span></div>
+    <div class="sr"><span class="sk">Total expenses paid</span><span class="sv rd" id="fo-exp"></span></div>
+    <div class="sr" id="fo-reprow" style="display:none"><span class="sk">Final reputation</span><span class="sv" id="fo-repv"></span></div>
+    <div class="stot"><span>Net profit / loss</span><span id="fo-profit"></span></div>
+  </div>
+  <div id="fo-hist" style="margin-bottom:.7rem">
+    <div class="slab">Full profit history</div><div class="hbar-wrap" id="fo-bars"></div>
+    <div style="font-size:10px;color:var(--gr);font-family:sans-serif;text-align:center;margin-top:3px">Green = profit · Red = loss</div>
+  </div>
+  <div class="lcard"><div class="ltag">Concepts practiced</div><div class="lbod" id="fo-concepts"></div></div>
+  <div class="row2"><button class="btn btnp" onclick="saveGoLB()">Leaderboard 🏆</button><button class="btn btny" onclick="printWS()">Print Worksheet 📄</button></div>
+  <div class="row2" style="margin-top:0"><button class="btn" onclick="askClaude()">Ask Claude to explain concepts ↗</button><button class="btn" onclick="resetGame()">Play Again</button></div>
+</div>
+<div class="scr" id="s-lb">
+  <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:.85rem"><h2 style="font-size:20px">Class Leaderboard 🏆</h2><button class="btn" onclick="show('s-welcome')">← Home</button></div>
+  <div class="card cam"><div class="slab">Filter by class period</div><div class="tgrp" id="lb-filters"></div></div>
+  <div class="card" style="overflow-x:auto">
+    <table class="lb-tbl"><thead><tr><th>#</th><th>Student</th><th>Class</th><th>Stand</th><th>Mode</th><th>Profit</th><th>Grade</th></tr></thead>
+    <tbody id="lb-body"><tr><td colspan="7" style="text-align:center;color:var(--gr);padding:2rem;font-family:sans-serif">No scores yet!</td></tr></tbody></table>
+  </div>
+  <button class="btn btnf" onclick="clearLB()" style="font-size:12px;color:var(--gr);border-color:var(--bdr)">🗑 Clear leaderboard (teacher reset)</button>
+</div>
+<div class="scr pronly" id="s-ws">
+  <div style="font-family:Georgia,serif;max-width:720px;margin:0 auto">
+    <div style="text-align:center;border-bottom:2px solid #333;padding-bottom:.8rem;margin-bottom:1rem">
+      <div style="font-size:20px;font-weight:bold">🍋 Lemonade Stand Pro — Reflection Worksheet</div>
+      <div style="font-size:11px;color:#666;margin-top:3px">BCIT Business Simulation · Located in Langhorne PA</div>
+    </div>
+    <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:.5rem;margin-bottom:.8rem;font-size:12px">
+      <div>Name: <u><span id="ws-nm"></span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</u></div>
+      <div>Class: <u><span id="ws-cl"></span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</u></div>
+      <div>Date: <u><span id="ws-dt"></span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</u></div>
+    </div>
+    <div style="background:#FAEEDA;border:1px solid #EF9F27;border-radius:6px;padding:.45rem .8rem;margin-bottom:1rem;font-size:12px">
+      <b>Stand:</b> <span id="ws-st"></span> | <b>Mode:</b> <span id="ws-di"></span> | <b>Net Profit/Loss:</b> <span id="ws-pr"></span> | <b>Grade:</b> <span id="ws-gr"></span>
+    </div>
+    <div id="ws-qs"></div>
+    <div style="margin-top:1rem;border-top:1px solid #ccc;padding-top:.6rem;font-size:10px;color:#555;line-height:1.8"><b>Key Terms:</b> Revenue (total sales income) · Cost (money spent to operate) · Profit (Revenue − Costs) · Break-Even (Revenue = Costs) · Fixed/Overhead Costs (daily regardless of sales) · Variable Costs (change with production) · Supply (what you produce) · Demand (what customers want) · Price Elasticity (demand change when price changes) · Marketing ROI (extra revenue per ad dollar) · Reputation Capital (brand trust that multiplies future demand)</div>
+  </div>
+</div>
+</div>
+<script>
+
+// AUDIO ENGINE
+const SND={
+  ac:null,_g(){if(!this.ac){try{this.ac=new(window.AudioContext||window.webkitAudioContext)();}catch(e){}}return this.ac;},
+  thunder(){const ac=this._g();if(!ac)return;const b=ac.createBuffer(1,ac.sampleRate*1.8,ac.sampleRate),d=b.getChannelData(0);for(let i=0;i<d.length;i++)d[i]=(Math.random()*2-1)*Math.max(0,1-i/d.length*0.6);const s=ac.createBufferSource();s.buffer=b;const lp=ac.createBiquadFilter();lp.type='lowpass';lp.frequency.value=150;const g=ac.createGain();g.gain.setValueAtTime(1.1,ac.currentTime);g.gain.exponentialRampToValueAtTime(0.001,ac.currentTime+1.8);s.connect(lp);lp.connect(g);g.connect(ac.destination);s.start();const o=ac.createOscillator(),og=ac.createGain();o.type='sawtooth';o.frequency.value=80;og.gain.setValueAtTime(0.4,ac.currentTime);og.gain.exponentialRampToValueAtTime(0.001,ac.currentTime+0.25);o.connect(og);og.connect(ac.destination);o.start();o.stop(ac.currentTime+0.3);},
+  cash(){const ac=this._g();if(!ac)return;[523,659,784,1047].forEach((f,i)=>{const o=ac.createOscillator(),g=ac.createGain();o.type='triangle';o.frequency.value=f;const t=ac.currentTime+i*.12;g.gain.setValueAtTime(0,t);g.gain.linearRampToValueAtTime(.25,t+.02);g.gain.exponentialRampToValueAtTime(.001,t+.3);o.connect(g);g.connect(ac.destination);o.start(t);o.stop(t+.32);});},
+  loss(){const ac=this._g();if(!ac)return;[[392,0],[349,.22],[330,.44],[294,.72]].forEach(([f,dl])=>{const o=ac.createOscillator(),g=ac.createGain();o.type='sawtooth';o.frequency.value=f;const t=ac.currentTime+dl;g.gain.setValueAtTime(0,t);g.gain.linearRampToValueAtTime(.18,t+.05);g.gain.exponentialRampToValueAtTime(.001,t+.4);o.connect(g);g.connect(ac.destination);o.start(t);o.stop(t+.5);});},
+  cheer(){const ac=this._g();if(!ac)return;const b=ac.createBuffer(1,ac.sampleRate*.7,ac.sampleRate),d=b.getChannelData(0);for(let i=0;i<d.length;i++)d[i]=(Math.random()*2-1)*.3;const s=ac.createBufferSource();s.buffer=b;s.loop=true;const bp=ac.createBiquadFilter();bp.type='bandpass';bp.Q.value=0.5;bp.frequency.setValueAtTime(800,ac.currentTime);bp.frequency.exponentialRampToValueAtTime(2600,ac.currentTime+.55);const g=ac.createGain();g.gain.setValueAtTime(0,ac.currentTime);g.gain.linearRampToValueAtTime(.38,ac.currentTime+.1);g.gain.exponentialRampToValueAtTime(.001,ac.currentTime+.75);s.connect(bp);bp.connect(g);g.connect(ac.destination);s.start();s.stop(ac.currentTime+.8);},
+  buzz(){const ac=this._g();if(!ac)return;const o=ac.createOscillator(),g=ac.createGain();o.type='sawtooth';o.frequency.value=195;const lfo=ac.createOscillator(),lg=ac.createGain();lfo.frequency.value=28;lg.gain.value=65;lfo.connect(lg);lg.connect(o.frequency);g.gain.setValueAtTime(.28,ac.currentTime);g.gain.exponentialRampToValueAtTime(.001,ac.currentTime+1.1);o.connect(g);g.connect(ac.destination);lfo.start();o.start();o.stop(ac.currentTime+1.1);lfo.stop(ac.currentTime+1.1);},
+  click(){const ac=this._g();if(!ac)return;const o=ac.createOscillator(),g=ac.createGain();o.type='square';o.frequency.value=900;g.gain.setValueAtTime(.1,ac.currentTime);g.gain.exponentialRampToValueAtTime(.001,ac.currentTime+.04);o.connect(g);g.connect(ac.destination);o.start();o.stop(ac.currentTime+.05);},
+  fanfare(){const ac=this._g();if(!ac)return;[[523,0],[659,.14],[784,.28],[1047,.42],[1047,.56],[784,.7],[1047,.9]].forEach(([f,t])=>{const o=ac.createOscillator(),g=ac.createGain();o.type='triangle';o.frequency.value=f;const st=ac.currentTime+t;g.gain.setValueAtTime(0,st);g.gain.linearRampToValueAtTime(.3,st+.05);g.gain.exponentialRampToValueAtTime(.001,st+.25);o.connect(g);g.connect(ac.destination);o.start(st);o.stop(st+.28);});},
+  rain(){const ac=this._g();if(!ac)return;for(let i=0;i<10;i++){const b=ac.createBuffer(1,Math.floor(ac.sampleRate*.04),ac.sampleRate),d=b.getChannelData(0);for(let j=0;j<d.length;j++)d[j]=(Math.random()*2-1)*.12;const s=ac.createBufferSource();s.buffer=b;const g=ac.createGain(),dl=i*.18+Math.random()*.1;g.gain.setValueAtTime(0,ac.currentTime+dl);g.gain.linearRampToValueAtTime(.3,ac.currentTime+dl+.01);g.gain.exponentialRampToValueAtTime(.001,ac.currentTime+dl+.05);s.connect(g);g.connect(ac.destination);s.start(ac.currentTime+dl);}},
+  wind(){const ac=this._g();if(!ac)return;const b=ac.createBuffer(1,Math.floor(ac.sampleRate*1.2),ac.sampleRate),d=b.getChannelData(0);for(let i=0;i<d.length;i++)d[i]=(Math.random()*2-1);const s=ac.createBufferSource();s.buffer=b;const hp=ac.createBiquadFilter();hp.type='highpass';hp.frequency.value=600;const g=ac.createGain();g.gain.setValueAtTime(0,ac.currentTime);g.gain.linearRampToValueAtTime(.18,ac.currentTime+.3);g.gain.setValueAtTime(.18,ac.currentTime+.9);g.gain.exponentialRampToValueAtTime(.001,ac.currentTime+1.2);s.connect(hp);hp.connect(g);g.connect(ac.destination);s.start();}
+};
+
+// SVG SCENES
+const SC={
+stand:'<svg viewBox="0 0 300 148" xmlns="http://www.w3.org/2000/svg" style="width:100%;max-width:280px"><rect x="60" y="105" width="180" height="43" rx="4" fill="none" stroke="#333" stroke-width="2.5"/><polygon points="48,105 150,70 252,105" fill="white" stroke="#333" stroke-width="2.5"/><line x1="100" y1="105" x2="80" y2="86" stroke="#333" stroke-width="1.5"/><line x1="150" y1="102" x2="150" y2="70" stroke="#333" stroke-width="1.5"/><line x1="200" y1="105" x2="220" y2="86" stroke="#333" stroke-width="1.5"/><rect x="82" y="84" width="136" height="22" rx="3" fill="white" stroke="#333" stroke-width="1.5"/><text x="150" y="100" text-anchor="middle" font-family="Georgia,serif" font-size="12" fill="#333" font-weight="bold">LEMONADE 25¢</text><path d="M152,109 L149,140 L175,140 L172,109 Z" fill="white" stroke="#333" stroke-width="1.5"/><ellipse cx="162" cy="124" rx="11" ry="14" fill="white" stroke="#333" stroke-width="1.5"/><path d="M173,116 Q181,116 181,124 Q181,132 173,132" fill="none" stroke="#333" stroke-width="1.5"/><path d="M108,109 L104,140 L118,140 L114,109 Z" fill="white" stroke="#333" stroke-width="1.5"/><circle cx="252" cy="30" r="17" fill="white" stroke="#333" stroke-width="2"/><line x1="252" y1="9" x2="252" y2="5" stroke="#333" stroke-width="2"/><line x1="252" y1="54" x2="252" y2="58" stroke="#333" stroke-width="2"/><line x1="231" y1="30" x2="227" y2="30" stroke="#333" stroke-width="2"/><line x1="273" y1="30" x2="277" y2="30" stroke="#333" stroke-width="2"/><line x1="236" y1="15" x2="233" y2="12" stroke="#333" stroke-width="2"/><line x1="268" y1="46" x2="271" y2="49" stroke="#333" stroke-width="2"/><circle cx="138" cy="86" r="11" fill="white" stroke="#333" stroke-width="2"/><circle cx="134" cy="84" r="1.5" fill="#333"/><circle cx="142" cy="84" r="1.5" fill="#333"/><path d="M133,90 Q138,95 143,90" fill="none" stroke="#333" stroke-width="1.5"/></svg>',
+storm:'<svg viewBox="0 0 300 148" xmlns="http://www.w3.org/2000/svg" style="width:100%;max-width:280px"><ellipse cx="95" cy="44" rx="68" ry="30" fill="#444"/><ellipse cx="195" cy="40" rx="78" ry="33" fill="#444"/><ellipse cx="148" cy="56" rx="82" ry="26" fill="#555"/><polygon points="162,70 148,102 161,102 145,135 175,98 160,98 178,70" fill="white" stroke="#333" stroke-width="1.5"/><line x1="45" y1="96" x2="34" y2="125" stroke="#888" stroke-width="2" stroke-dasharray="4,7"/><line x1="78" y1="93" x2="67" y2="122" stroke="#888" stroke-width="2" stroke-dasharray="4,7"/><line x1="218" y1="93" x2="207" y2="122" stroke="#888" stroke-width="2" stroke-dasharray="4,7"/><line x1="252" y1="96" x2="241" y2="125" stroke="#888" stroke-width="2" stroke-dasharray="4,7"/><rect x="78" y="116" width="130" height="24" rx="3" fill="white" stroke="#333" stroke-width="2" transform="rotate(-4,143,128)"/><circle cx="55" cy="113" r="10" fill="white" stroke="#333" stroke-width="2"/><path d="M46,120 Q55,108 64,120" fill="#888" stroke="#333" stroke-width="1.5"/><line x1="55" y1="108" x2="55" y2="103" stroke="#333" stroke-width="1.5"/><circle cx="52" cy="111" r="1.2" fill="#333"/><circle cx="58" cy="111" r="1.2" fill="#333"/><path d="M52,116 Q55,114 58,116" fill="none" stroke="#333" stroke-width="1.5"/></svg>',
+scorching:'<svg viewBox="0 0 300 148" xmlns="http://www.w3.org/2000/svg" style="width:100%;max-width:280px"><circle cx="150" cy="46" r="40" fill="white" stroke="#333" stroke-width="2.5"/><line x1="150" y1="2" x2="150" y2="-2" stroke="#333" stroke-width="2.5"/><line x1="150" y1="92" x2="150" y2="96" stroke="#333" stroke-width="2.5"/><line x1="108" y1="46" x2="103" y2="46" stroke="#333" stroke-width="2.5"/><line x1="192" y1="46" x2="197" y2="46" stroke="#333" stroke-width="2.5"/><line x1="121" y1="17" x2="117" y2="13" stroke="#333" stroke-width="2.5"/><line x1="179" y1="76" x2="183" y2="80" stroke="#333" stroke-width="2.5"/><line x1="179" y1="17" x2="183" y2="13" stroke="#333" stroke-width="2.5"/><line x1="121" y1="76" x2="117" y2="80" stroke="#333" stroke-width="2.5"/><circle cx="140" cy="42" r="3" fill="#333"/><circle cx="160" cy="42" r="3" fill="#333"/><path d="M137,55 Q150,64 163,55" fill="none" stroke="#333" stroke-width="2"/><rect x="55" y="103" width="190" height="30" rx="4" fill="white" stroke="#333" stroke-width="2"/><text x="150" y="122" text-anchor="middle" font-family="Georgia" font-size="11" fill="#333">LEMONADE STAND 🍋</text><path d="M28,136 Q48,126 68,136 Q88,146 108,136 Q128,126 148,136 Q168,146 188,136 Q208,126 228,136 Q248,146 268,136" fill="none" stroke="#888" stroke-width="1.5" stroke-dasharray="4,3"/></svg>',
+sunny:'<svg viewBox="0 0 300 148" xmlns="http://www.w3.org/2000/svg" style="width:100%;max-width:280px"><circle cx="240" cy="36" r="27" fill="white" stroke="#333" stroke-width="2"/><line x1="240" y1="5" x2="240" y2="1" stroke="#333" stroke-width="2"/><line x1="240" y1="70" x2="240" y2="74" stroke="#333" stroke-width="2"/><line x1="208" y1="36" x2="204" y2="36" stroke="#333" stroke-width="2"/><line x1="272" y1="36" x2="276" y2="36" stroke="#333" stroke-width="2"/><line x1="217" y1="14" x2="213" y2="10" stroke="#333" stroke-width="2"/><line x1="263" y1="59" x2="267" y2="63" stroke="#333" stroke-width="2"/><line x1="263" y1="14" x2="267" y2="10" stroke="#333" stroke-width="2"/><line x1="217" y1="59" x2="213" y2="63" stroke="#333" stroke-width="2"/><circle cx="232" cy="32" r="2.5" fill="#333"/><circle cx="248" cy="32" r="2.5" fill="#333"/><path d="M231,42 Q240,48 249,42" fill="none" stroke="#333" stroke-width="1.5"/><circle cx="70" cy="100" r="11" fill="white" stroke="#333" stroke-width="2"/><line x1="70" y1="111" x2="70" y2="133" stroke="#333" stroke-width="2"/><line x1="70" y1="119" x2="55" y2="126" stroke="#333" stroke-width="2"/><line x1="70" y1="119" x2="85" y2="126" stroke="#333" stroke-width="2"/><circle cx="66" cy="97" r="1.5" fill="#333"/><circle cx="74" cy="97" r="1.5" fill="#333"/><path d="M65,103 Q70,108 75,103" fill="none" stroke="#333" stroke-width="1.5"/><circle cx="160" cy="106" r="9" fill="white" stroke="#333" stroke-width="1.5"/><line x1="160" y1="115" x2="160" y2="133" stroke="#333" stroke-width="1.5"/><circle cx="200" cy="104" r="9" fill="white" stroke="#333" stroke-width="1.5"/><line x1="200" y1="113" x2="200" y2="131" stroke="#333" stroke-width="1.5"/><circle cx="235" cy="108" r="8" fill="white" stroke="#333" stroke-width="1.5"/><line x1="235" y1="116" x2="235" y2="132" stroke="#333" stroke-width="1.5"/></svg>',
+rainy:'<svg viewBox="0 0 300 148" xmlns="http://www.w3.org/2000/svg" style="width:100%;max-width:280px"><ellipse cx="110" cy="40" rx="72" ry="28" fill="#888"/><ellipse cx="200" cy="44" rx="65" ry="26" fill="#777"/><ellipse cx="150" cy="56" rx="80" ry="26" fill="#999"/><line x1="55" y1="88" x2="44" y2="118" stroke="#555" stroke-width="2.5"/><line x1="88" y1="86" x2="77" y2="116" stroke="#555" stroke-width="2.5"/><line x1="122" y1="89" x2="111" y2="119" stroke="#555" stroke-width="2.5"/><line x1="155" y1="88" x2="144" y2="118" stroke="#555" stroke-width="2.5"/><line x1="188" y1="89" x2="177" y2="119" stroke="#555" stroke-width="2.5"/><line x1="222" y1="86" x2="211" y2="116" stroke="#555" stroke-width="2.5"/><line x1="255" y1="88" x2="244" y2="118" stroke="#555" stroke-width="2.5"/><rect x="88" y="116" width="124" height="24" rx="4" fill="white" stroke="#333" stroke-width="2"/><text x="150" y="126" text-anchor="middle" font-family="Georgia" font-size="9" fill="#666">nobody is coming</text><text x="150" y="137" text-anchor="middle" font-family="Georgia" font-size="9" fill="#666">out in this weather...</text></svg>',
+windy:'<svg viewBox="0 0 300 148" xmlns="http://www.w3.org/2000/svg" style="width:100%;max-width:280px"><path d="M18,53 Q55,36 92,53 Q130,70 168,53 Q205,36 245,53 Q270,63 292,53" fill="none" stroke="#777" stroke-width="2.5"/><path d="M18,73 Q55,56 92,73 Q130,90 168,73 Q205,56 248,73 Q272,80 292,73" fill="none" stroke="#aaa" stroke-width="2"/><path d="M18,90 Q60,74 100,90 Q140,106 180,90 Q218,74 258,90" fill="none" stroke="#bbb" stroke-width="1.5"/><rect x="182" y="16" width="82" height="20" rx="3" fill="white" stroke="#333" stroke-width="2" transform="rotate(-28,223,26)"/><text x="223" y="30" text-anchor="middle" font-family="Georgia" font-size="10" fill="#333" transform="rotate(-28,223,26)">LEMONADE</text><path d="M98,26 Q118,16 138,26" fill="white" stroke="#333" stroke-width="2"/><ellipse cx="118" cy="26" rx="24" ry="6" fill="white" stroke="#333" stroke-width="2"/><circle cx="75" cy="108" r="11" fill="white" stroke="#333" stroke-width="2"/><line x1="75" y1="119" x2="75" y2="143" stroke="#333" stroke-width="2"/><line x1="75" y1="128" x2="100" y2="118" stroke="#333" stroke-width="2"/><line x1="75" y1="128" x2="50" y2="138" stroke="#333" stroke-width="2"/><line x1="100" y1="96" x2="100" y2="146" stroke="#333" stroke-width="3"/><rect x="82" y="112" width="75" height="22" rx="3" fill="white" stroke="#333" stroke-width="2"/><circle cx="71" cy="105" r="1.5" fill="#333"/><circle cx="79" cy="106" r="1.5" fill="#333"/><path d="M70,111 Q74,110 78,112" fill="none" stroke="#333" stroke-width="1.5"/></svg>',
+overcast:'<svg viewBox="0 0 300 148" xmlns="http://www.w3.org/2000/svg" style="width:100%;max-width:280px"><ellipse cx="90" cy="48" rx="65" ry="26" fill="#bbb"/><ellipse cx="190" cy="44" rx="75" ry="28" fill="#aaa"/><ellipse cx="140" cy="62" rx="85" ry="26" fill="#ccc"/><text x="150" y="102" text-anchor="middle" font-family="Georgia" font-size="15" fill="#888" font-style="italic">...meh.</text><circle cx="80" cy="123" r="9" fill="white" stroke="#888" stroke-width="1.5"/><line x1="80" y1="132" x2="80" y2="146" stroke="#888" stroke-width="1.5"/><circle cx="77" cy="121" r="1.2" fill="#888"/><circle cx="83" cy="121" r="1.2" fill="#888"/><path d="M77,127 Q80,125 83,127" fill="none" stroke="#888" stroke-width="1.5"/><circle cx="160" cy="123" r="9" fill="white" stroke="#888" stroke-width="1.5"/><line x1="160" y1="132" x2="160" y2="146" stroke="#888" stroke-width="1.5"/><circle cx="220" cy="120" r="9" fill="white" stroke="#888" stroke-width="1.5"/><line x1="220" y1="129" x2="220" y2="146" stroke="#888" stroke-width="1.5"/></svg>',
+crowd:'<svg viewBox="0 0 300 148" xmlns="http://www.w3.org/2000/svg" style="width:100%;max-width:280px"><defs><marker id="arr" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto"><path d="M0,0 L10,5 L0,10 Z" fill="#333"/></marker></defs><circle cx="200" cy="88" r="7" fill="white" stroke="#aaa" stroke-width="1.5"/><line x1="200" y1="95" x2="200" y2="110" stroke="#aaa" stroke-width="1.5"/><circle cx="222" cy="85" r="7" fill="white" stroke="#aaa" stroke-width="1.5"/><line x1="222" y1="92" x2="222" y2="107" stroke="#aaa" stroke-width="1.5"/><circle cx="244" cy="88" r="7" fill="white" stroke="#aaa" stroke-width="1.5"/><line x1="244" y1="95" x2="244" y2="110" stroke="#aaa" stroke-width="1.5"/><circle cx="266" cy="85" r="7" fill="white" stroke="#aaa" stroke-width="1.5"/><line x1="266" y1="92" x2="266" y2="107" stroke="#aaa" stroke-width="1.5"/><circle cx="165" cy="98" r="9" fill="white" stroke="#888" stroke-width="1.5"/><line x1="165" y1="107" x2="165" y2="126" stroke="#888" stroke-width="1.5"/><circle cx="190" cy="96" r="9" fill="white" stroke="#888" stroke-width="1.5"/><line x1="190" y1="105" x2="190" y2="124" stroke="#888" stroke-width="1.5"/><circle cx="100" cy="106" r="11" fill="white" stroke="#555" stroke-width="2"/><line x1="100" y1="117" x2="100" y2="146" stroke="#555" stroke-width="2"/><line x1="100" y1="128" x2="84" y2="138" stroke="#555" stroke-width="2"/><line x1="100" y1="128" x2="116" y2="138" stroke="#555" stroke-width="2"/><circle cx="97" cy="103" r="1.5" fill="#555"/><circle cx="103" cy="103" r="1.5" fill="#555"/><path d="M96,110 Q100,114 104,110" fill="none" stroke="#555" stroke-width="1.5"/><circle cx="135" cy="103" r="11" fill="white" stroke="#555" stroke-width="2"/><line x1="135" y1="114" x2="135" y2="146" stroke="#555" stroke-width="2"/><circle cx="132" cy="100" r="1.5" fill="#555"/><circle cx="138" cy="100" r="1.5" fill="#555"/><path d="M131,107 Q135,111 139,107" fill="none" stroke="#555" stroke-width="1.5"/><path d="M60,128 L30,128" stroke="#333" stroke-width="2.5" marker-end="url(#arr)"/><rect x="4" y="116" width="48" height="30" rx="3" fill="white" stroke="#333" stroke-width="2"/><text x="28" y="131" text-anchor="middle" font-family="Georgia" font-size="8" fill="#333">LEMON-</text><text x="28" y="142" text-anchor="middle" font-family="Georgia" font-size="8" fill="#333">ADE</text></svg>',
+viral:'<svg viewBox="0 0 300 148" xmlns="http://www.w3.org/2000/svg" style="width:100%;max-width:280px"><rect x="108" y="16" width="84" height="126" rx="10" fill="white" stroke="#333" stroke-width="3"/><rect x="116" y="28" width="68" height="88" rx="3" fill="#f0f0f0" stroke="#333" stroke-width="1.5"/><circle cx="150" cy="58" r="19" fill="white" stroke="#333" stroke-width="1.5"/><text x="150" y="65" text-anchor="middle" font-family="serif" font-size="22">🍋</text><text x="150" y="92" text-anchor="middle" font-family="Georgia" font-size="8" fill="#333">22,457 likes</text><text x="150" y="104" text-anchor="middle" font-family="Georgia" font-size="7" fill="#666">"best lemonade ever!!!"</text><circle cx="150" cy="134" r="6" fill="white" stroke="#333" stroke-width="1.5"/><text x="72" y="50" font-size="20" fill="#333" transform="rotate(-18,72,50)">&#x2665;</text><text x="42" y="86" font-size="15" fill="#555" transform="rotate(12,42,86)">&#x2605;</text><text x="218" y="40" font-size="18" fill="#333" transform="rotate(22,218,40)">&#x2665;</text><text x="240" y="76" font-size="13" fill="#555" transform="rotate(-12,240,76)">&#x2605;</text><circle cx="38" cy="126" r="10" fill="white" stroke="#333" stroke-width="2"/><line x1="38" y1="136" x2="38" y2="148" stroke="#333" stroke-width="2"/><line x1="38" y1="143" x2="22" y2="131" stroke="#333" stroke-width="2"/><line x1="38" y1="143" x2="54" y2="131" stroke="#333" stroke-width="2"/><circle cx="35" cy="123" r="1.5" fill="#333"/><circle cx="41" cy="123" r="1.5" fill="#333"/><path d="M34,129 Q38,134 42,129" fill="none" stroke="#333" stroke-width="1.5"/></svg>',
+bees:'<svg viewBox="0 0 300 148" xmlns="http://www.w3.org/2000/svg" style="width:100%;max-width:280px"><circle cx="55" cy="106" r="10" fill="white" stroke="#333" stroke-width="2"/><line x1="55" y1="116" x2="50" y2="140" stroke="#333" stroke-width="2"/><line x1="50" y1="140" x2="40" y2="148" stroke="#333" stroke-width="2"/><line x1="55" y1="124" x2="40" y2="118" stroke="#333" stroke-width="2"/><line x1="55" y1="124" x2="68" y2="114" stroke="#333" stroke-width="2"/><text x="22" y="128" font-family="sans-serif" font-size="22" fill="#333">&#8592;</text><rect x="168" y="106" width="110" height="38" rx="4" fill="white" stroke="#333" stroke-width="2"/><text x="223" y="129" text-anchor="middle" font-family="Georgia" font-size="10" fill="#333">LEMONADE STAND</text><ellipse cx="130" cy="56" rx="10" ry="6" fill="#ddd" stroke="#333" stroke-width="1.5"/><ellipse cx="128" cy="52" rx="5" ry="3" fill="white" stroke="#888" stroke-width="1" opacity="0.8"/><line x1="130" y1="60" x2="130" y2="63" stroke="#333" stroke-width="1.5"/><ellipse cx="162" cy="70" rx="9" ry="5" fill="#ddd" stroke="#333" stroke-width="1.5"/><ellipse cx="160" cy="66" rx="5" ry="3" fill="white" stroke="#888" stroke-width="1" opacity="0.8"/><ellipse cx="145" cy="40" rx="10" ry="6" fill="#ddd" stroke="#333" stroke-width="1.5"/><ellipse cx="143" cy="36" rx="5" ry="3" fill="white" stroke="#888" stroke-width="1" opacity="0.8"/><ellipse cx="108" cy="76" rx="7" ry="4" fill="#eee" stroke="#555" stroke-width="1"/><ellipse cx="175" cy="46" rx="7" ry="4" fill="#eee" stroke="#555" stroke-width="1"/><text x="100" y="91" font-family="Georgia" font-size="14" fill="#555" font-style="italic">BZZZZZ!</text></svg>',
+rival:'<svg viewBox="0 0 300 148" xmlns="http://www.w3.org/2000/svg" style="width:100%;max-width:280px"><rect x="12" y="90" width="112" height="50" rx="4" fill="white" stroke="#333" stroke-width="2.5"/><polygon points="4,90 68,60 132,90" fill="white" stroke="#333" stroke-width="2.5"/><rect x="28" y="72" width="82" height="18" rx="3" fill="white" stroke="#333" stroke-width="1.5"/><text x="69" y="85" text-anchor="middle" font-family="Georgia" font-size="10" fill="#333">LEMONADE</text><text x="69" y="123" text-anchor="middle" font-family="Georgia" font-size="10" fill="#555">$1.25/cup</text><text x="150" y="123" text-anchor="middle" font-family="Georgia" font-size="22" fill="#333" font-weight="bold">VS</text><rect x="168" y="95" width="112" height="46" rx="4" fill="white" stroke="#555" stroke-width="2" stroke-dasharray="6,3"/><polygon points="162,95 224,66 286,95" fill="#eee" stroke="#555" stroke-width="2" stroke-dasharray="6,3"/><text x="224" y="126" text-anchor="middle" font-family="Georgia" font-size="10" fill="#888">$0.50/cup</text><text x="224" y="90" text-anchor="middle" font-family="Georgia" font-size="9" fill="#999">ORANGEADE</text><text x="224" y="138" text-anchor="middle" font-family="Georgia" font-size="8" fill="#bbb">"refresing" (sic)</text></svg>',
+news:'<svg viewBox="0 0 300 148" xmlns="http://www.w3.org/2000/svg" style="width:100%;max-width:280px"><rect x="48" y="66" width="102" height="60" rx="5" fill="white" stroke="#333" stroke-width="2.5"/><rect x="150" y="81" width="62" height="30" rx="3" fill="white" stroke="#333" stroke-width="2"/><circle cx="216" cy="96" r="13" fill="#eee" stroke="#333" stroke-width="2"/><circle cx="216" cy="96" r="8" fill="#ccc" stroke="#333" stroke-width="1.5"/><circle cx="216" cy="96" r="3" fill="#888"/><circle cx="135" cy="61" r="7" fill="#aaa" stroke="#333" stroke-width="1.5"/><text x="135" y="66" text-anchor="middle" font-family="sans-serif" font-size="9" fill="#333">REC</text><line x1="99" y1="126" x2="68" y2="148" stroke="#333" stroke-width="2.5"/><line x1="99" y1="126" x2="99" y2="148" stroke="#333" stroke-width="2.5"/><line x1="99" y1="126" x2="130" y2="148" stroke="#333" stroke-width="2.5"/><circle cx="40" cy="68" r="11" fill="white" stroke="#333" stroke-width="2"/><line x1="40" y1="79" x2="40" y2="110" stroke="#333" stroke-width="2"/><circle cx="255" cy="76" r="11" fill="white" stroke="#333" stroke-width="2"/><line x1="255" y1="87" x2="255" y2="126" stroke="#333" stroke-width="2"/><rect x="265" y="91" width="8" height="16" rx="4" fill="white" stroke="#333" stroke-width="1.5"/><rect x="168" y="128" width="118" height="18" rx="3" fill="#333"/><text x="227" y="141" text-anchor="middle" font-family="sans-serif" font-size="9" fill="white">&#9679; LIVE: KID ENTREPRENEUR</text></svg>',
+dog:'<svg viewBox="0 0 300 148" xmlns="http://www.w3.org/2000/svg" style="width:100%;max-width:280px"><rect x="150" y="92" width="130" height="50" rx="4" fill="white" stroke="#333" stroke-width="2"/><ellipse cx="100" cy="126" rx="55" ry="24" fill="white" stroke="#333" stroke-width="2.5"/><circle cx="152" cy="106" r="27" fill="white" stroke="#333" stroke-width="2.5"/><path d="M132,88 Q118,70 122,96" fill="white" stroke="#333" stroke-width="2"/><path d="M168,88 Q182,70 178,96" fill="white" stroke="#333" stroke-width="2"/><ellipse cx="154" cy="116" rx="13" ry="8" fill="#eee" stroke="#333" stroke-width="1.5"/><ellipse cx="154" cy="113" rx="6" ry="4" fill="#555" stroke="#333" stroke-width="1"/><path d="M148,122 Q154,131 160,122" fill="#ccc" stroke="#333" stroke-width="1.5"/><circle cx="142" cy="104" r="5" fill="white" stroke="#333" stroke-width="1.5"/><circle cx="165" cy="104" r="5" fill="white" stroke="#333" stroke-width="1.5"/><circle cx="143" cy="105" r="2.5" fill="#333"/><circle cx="166" cy="105" r="2.5" fill="#333"/><path d="M48,111 Q28,96 18,111 Q8,126 28,120" fill="none" stroke="#333" stroke-width="2.5"/><text x="178" y="122" text-anchor="middle" font-family="Georgia" font-size="9" fill="#888">nobody here?</text></svg>',
+trophy:'<svg viewBox="0 0 260 160" xmlns="http://www.w3.org/2000/svg" style="width:100%;max-width:220px"><path d="M85,26 L175,26 L160,106 L100,106 Z" fill="white" stroke="#333" stroke-width="3"/><path d="M85,31 Q44,31 44,60 Q44,86 85,86" fill="none" stroke="#333" stroke-width="3"/><path d="M175,31 Q216,31 216,60 Q216,86 175,86" fill="none" stroke="#333" stroke-width="3"/><rect x="115" y="106" width="30" height="30" rx="2" fill="white" stroke="#333" stroke-width="2.5"/><rect x="90" y="136" width="80" height="18" rx="4" fill="white" stroke="#333" stroke-width="2.5"/><polygon points="130,46 137,66 158,66 142,78 148,98 130,86 112,98 118,78 102,66 123,66" fill="white" stroke="#333" stroke-width="2"/><text x="42" y="53" font-size="18">&#9733;</text><text x="208" y="53" font-size="18">&#9733;</text><text x="52" y="106" font-size="14">&#9733;</text><text x="200" y="103" font-size="14">&#9733;</text></svg>',
+profitface:'<svg viewBox="0 0 300 148" xmlns="http://www.w3.org/2000/svg" style="width:100%;max-width:280px"><circle cx="150" cy="63" r="44" fill="white" stroke="#333" stroke-width="3"/><circle cx="136" cy="55" r="6" fill="white" stroke="#333" stroke-width="2"/><circle cx="164" cy="55" r="6" fill="white" stroke="#333" stroke-width="2"/><circle cx="137" cy="56" r="3" fill="#333"/><circle cx="165" cy="56" r="3" fill="#333"/><path d="M128,76 Q150,98 172,76" fill="white" stroke="#333" stroke-width="2.5"/><path d="M133,77 Q150,91 167,77 L167,81 Q150,95 133,81 Z" fill="#eee" stroke="#333" stroke-width="1"/><circle cx="122" cy="71" r="9" fill="#ddd" opacity="0.55"/><circle cx="178" cy="71" r="9" fill="#ddd" opacity="0.55"/><rect x="28" y="26" width="30" height="16" rx="2" fill="white" stroke="#333" stroke-width="2" transform="rotate(-25,43,34)"/><text x="43" y="39" text-anchor="middle" font-family="monospace" font-size="10" fill="#333" transform="rotate(-25,43,34)">$$$</text><rect x="244" y="20" width="30" height="16" rx="2" fill="white" stroke="#333" stroke-width="2" transform="rotate(22,259,28)"/><text x="259" y="33" text-anchor="middle" font-family="monospace" font-size="10" fill="#333" transform="rotate(22,259,28)">$$$</text><line x1="150" y1="107" x2="150" y2="146" stroke="#333" stroke-width="3"/><line x1="150" y1="120" x2="120" y2="136" stroke="#333" stroke-width="3"/><line x1="150" y1="120" x2="180" y2="136" stroke="#333" stroke-width="3"/></svg>',
+lossface:'<svg viewBox="0 0 300 148" xmlns="http://www.w3.org/2000/svg" style="width:100%;max-width:280px"><circle cx="150" cy="63" r="44" fill="white" stroke="#333" stroke-width="3"/><path d="M127,49 Q135,44 143,49" fill="none" stroke="#333" stroke-width="2"/><circle cx="135" cy="52" r="5" fill="#555" stroke="#333" stroke-width="1.5"/><path d="M157,49 Q165,44 173,49" fill="none" stroke="#333" stroke-width="2"/><circle cx="165" cy="52" r="5" fill="#555" stroke="#333" stroke-width="1.5"/><path d="M128,80 Q150,66 172,80" fill="none" stroke="#333" stroke-width="2.5"/><path d="M130,68 Q128,78 131,83" fill="none" stroke="#aaa" stroke-width="1.5"/><path d="M170,68 Q172,78 169,83" fill="none" stroke="#aaa" stroke-width="1.5"/><line x1="150" y1="107" x2="150" y2="141" stroke="#333" stroke-width="3"/><line x1="150" y1="117" x2="102" y2="115" stroke="#333" stroke-width="3"/><line x1="150" y1="117" x2="198" y2="115" stroke="#333" stroke-width="3"/><circle cx="150" cy="148" r="6" fill="white" stroke="#333" stroke-width="1.5"/><text x="150" y="152" text-anchor="middle" font-family="monospace" font-size="8" fill="#333">&#162;</text></svg>',
+wildcard:'<svg viewBox="0 0 300 148" xmlns="http://www.w3.org/2000/svg" style="width:100%;max-width:280px"><rect x="75" y="18" width="150" height="110" rx="12" fill="white" stroke="#333" stroke-width="3"/><text x="150" y="82" text-anchor="middle" font-family="sans-serif" font-size="52">&#127922;</text><text x="150" y="112" text-anchor="middle" font-family="Georgia" font-size="13" fill="#555">WILD CARD!</text><text x="30" y="63" font-size="24" transform="rotate(-20,30,63)">?</text><text x="252" y="63" font-size="24" transform="rotate(20,252,63)">?</text><text x="40" y="108" font-size="18" transform="rotate(10,40,108)">?</text><text x="242" y="106" font-size="18" transform="rotate(-10,242,106)">?</text></svg>',
+mint:'<svg viewBox="0 0 300 148" xmlns="http://www.w3.org/2000/svg" style="width:100%;max-width:280px"><rect x="85" y="66" width="130" height="70" rx="5" fill="white" stroke="#333" stroke-width="2.5"/><ellipse cx="150" cy="106" rx="40" ry="25" fill="#eee" stroke="#333" stroke-width="1.5"/><text x="150" y="113" text-anchor="middle" font-family="sans-serif" font-size="22">&#127819;</text><text x="172" y="98" font-size="16">&#127807;</text><text x="125" y="98" font-size="14">&#127807;</text><text x="150" y="40" text-anchor="middle" font-family="Georgia" font-size="16" fill="#2D7A1F" font-weight="bold">New Flavor!</text><text x="150" y="60" text-anchor="middle" font-family="Georgia" font-size="12" fill="#555">Mint Lemonade</text><text x="28" y="86" font-size="18" fill="#2D7A1F">&#10024;</text><text x="252" y="86" font-size="18" fill="#2D7A1F">&#10024;</text></svg>',
+influencer:'<svg viewBox="0 0 300 148" xmlns="http://www.w3.org/2000/svg" style="width:100%;max-width:280px"><circle cx="150" cy="58" r="30" fill="white" stroke="#333" stroke-width="2.5"/><circle cx="141" cy="53" r="3" fill="#333"/><circle cx="159" cy="53" r="3" fill="#333"/><path d="M140,65 Q150,73 160,65" fill="none" stroke="#333" stroke-width="2"/><text x="150" y="43" text-anchor="middle" font-family="sans-serif" font-size="14">&#128081;</text><line x1="150" y1="88" x2="150" y2="128" stroke="#333" stroke-width="2.5"/><line x1="150" y1="103" x2="130" y2="116" stroke="#333" stroke-width="2.5"/><line x1="150" y1="103" x2="172" y2="108" stroke="#333" stroke-width="2.5"/><rect x="170" y="98" width="70" height="38" rx="6" fill="white" stroke="#333" stroke-width="2"/><text x="205" y="112" text-anchor="middle" font-family="sans-serif" font-size="11">&#128241;</text><text x="205" y="128" text-anchor="middle" font-family="Georgia" font-size="8" fill="#888">recording live...</text><text x="40" y="68" font-size="20">&#9733;</text><text x="248" y="68" font-size="20">&#9733;</text></svg>',
+sibling:'<svg viewBox="0 0 300 148" xmlns="http://www.w3.org/2000/svg" style="width:100%;max-width:280px"><rect x="100" y="93" width="145" height="45" rx="4" fill="white" stroke="#333" stroke-width="2"/><text x="173" y="122" text-anchor="middle" font-family="Georgia" font-size="9" fill="#888">your stand (disaster zone)</text><circle cx="75" cy="80" r="14" fill="white" stroke="#333" stroke-width="2.5"/><line x1="75" y1="94" x2="75" y2="128" stroke="#333" stroke-width="2.5"/><line x1="75" y1="108" x2="55" y2="120" stroke="#333" stroke-width="2.5"/><line x1="75" y1="108" x2="100" y2="116" stroke="#333" stroke-width="2.5"/><circle cx="70" cy="77" r="2" fill="#333"/><circle cx="80" cy="77" r="2" fill="#333"/><path d="M70,84 Q75,80 80,84" fill="none" stroke="#333" stroke-width="1.5"/><text x="60" y="63" font-family="Georgia" font-size="10" fill="#555" font-style="italic">"I am helping!"</text><text x="200" y="90" font-family="sans-serif" font-size="18">&#127819;</text><text x="230" y="78" font-family="sans-serif" font-size="14">&#127819;</text><text x="148" y="70" font-family="sans-serif" font-size="26">&#128165;</text></svg>',
+charity:'<svg viewBox="0 0 300 148" xmlns="http://www.w3.org/2000/svg" style="width:100%;max-width:280px"><circle cx="150" cy="68" r="42" fill="white" stroke="#333" stroke-width="2.5"/><text x="150" y="84" text-anchor="middle" font-family="sans-serif" font-size="42">&#9829;</text><line x1="150" y1="110" x2="150" y2="146" stroke="#333" stroke-width="2.5"/><line x1="150" y1="123" x2="130" y2="138" stroke="#333" stroke-width="2.5"/><line x1="150" y1="123" x2="170" y2="138" stroke="#333" stroke-width="2.5"/><text x="38" y="53" font-size="16">&#9733;</text><text x="248" y="53" font-size="16">&#9733;</text><text x="25" y="83" font-size="14">&#9733;</text><text x="262" y="83" font-size="14">&#9733;</text></svg>'
+};
+function wxSc(wx){const m={heatwave:'scorching',scorching:'scorching',perfect:'sunny',sunny:'sunny',partcloud:'sunny',overcast:'overcast',windy:'windy',rainy:'rainy',storm:'storm',foggy:'overcast'};return SC[m[wx.id]||'sunny'];}
+function evSc(ev){if(!ev)return SC.stand;const m={bees:'bees',rival:'rival',rival_cut:'rival',rival_secret:'rival',rival_shut:'rival',chickfila:'rival',viral:'viral',news:'news',dog:'dog',sibling:'sibling',influencer:'influencer',mint_accident:'mint',charity:'charity',wildcard_dbl:'wildcard',time_expand:'wildcard',windstorm:'windy',crowd:'crowd',fieldtrip:'crowd','5k':'crowd',picky:'lossface',bad_rev:'lossface'};return SC[m[ev.id]||'wildcard']||SC.wildcard;}
+
+// GAME DATA
+const PRICES=[.25,.50,.75,1.00,1.25,1.50,1.75,2.00,2.25,2.50];
+const IC=0.10;
+const DIFFS={
+  easy:{days:7,oh:0,rep:false,spoil:false,qual:false,lbl:'Easy',
+    desc:'7 days. No daily overhead. Stable prices. Learn revenue, cost, profit, and inventory.',
+    conc:'Revenue & Cost · Profit · Supply & Demand · Price Elasticity · Inventory Management · Marketing ROI · Risk vs. Reward'},
+  standard:{days:14,oh:1.00,rep:true,spoil:false,qual:true,lbl:'Standard',
+    desc:'14 days. $1/day overhead. Reputation multiplies customers. Full event library.',
+    conc:'Revenue & Cost · Profit · Overhead Costs · Supply & Demand · Price Elasticity · Inventory · Marketing ROI · Reputation · Competition · Ethics · Break-Even · External Factors'},
+  hard:{days:21,oh:2.00,rep:true,spoil:true,qual:true,lbl:'Hard (MBA)',
+    desc:'21 days. Optional loan. $2/day overhead. Price volatility. Spoilage. Full chaos.',
+    conc:'Revenue & Cost · Profit · Overhead · Loans & Interest · Supply & Demand · Price Elasticity · Inventory & Spoilage · Marketing ROI · Reputation · Competition · Ethics · Break-Even · Price Volatility · Risk Management · Capital Investment'}
+};
+const WX=[
+  {id:'heatwave',n:'Extreme Heat Wave',e:'🌡',b:65,ds:'Heat emergency. Everyone needs cold drinks.',fc:'Dangerous heat — feels like 110°F. Peak lemonade conditions.'},
+  {id:'scorching',n:'Scorching Hot',e:'🔥',b:55,ds:'Roasting weather. Cold lemonade is all anyone wants.',fc:'Feels like 108°F. Prime lemonade conditions.'},
+  {id:'perfect',n:'Perfect Day',e:'✨',b:48,ds:'Blue skies, 84°F, light breeze. Customers everywhere.',fc:'Beautiful 84°F day with a gentle breeze.'},
+  {id:'sunny',n:'Sunny',e:'☀️',b:38,ds:'Classic lemonade weather. Great conditions.',fc:'Sunny and warm, high near 88°F.'},
+  {id:'partcloud',n:'Partly Cloudy',e:'⛅',b:24,ds:'Mix of clouds and sun. Decent day.',fc:'Some clouds, some sun. Comfortable outside.'},
+  {id:'overcast',n:'Overcast',e:'☁️',b:14,ds:'Gray skies. Fewer people venturing out.',fc:'Cloudy all day. Dull conditions.'},
+  {id:'windy',n:'Very Windy',e:'💨',b:16,ds:'Gusty winds. Signs blow over, cups tip.',fc:'Gusts up to 38mph. Secure everything.'},
+  {id:'rainy',n:'Rainy',e:'🌧',b:5,ds:'Rain all day. Nobody wants cold lemonade.',fc:'Showers likely throughout the day.'},
+  {id:'storm',n:'Thunderstorm',e:'⛈',b:2,ds:'Thunder, lightning. You may be the only soul outside.',fc:'Severe thunderstorm warning. Stay indoors if possible.'},
+  {id:'foggy',n:'Foggy Morning',e:'🌫',b:14,ds:'Dense fog until noon, then clears somewhat.',fc:'Dense fog until midday, then partial clearing.'},
+];
+const WW=[0.4,0.7,1.0,1.2,1.8,1.5,1.0,0.8,1.5,0.8];
+const DM={.25:3.0,.50:2.2,.75:1.6,1.00:1.2,1.25:1.0,1.50:.82,1.75:.65,2.00:.50,2.25:.38,2.50:.28};
+const ADHI={0:'No advertising. Walk-by traffic only.',1:'Flyers in the neighborhood. Modest boost.',2:'Hand-made signs. More customers.',5:'Social media posts. Strong pull.',10:'Full advertising blitz. Maximum visibility.'};
+const ADCU={0:[0,0],1:[3,8],2:[7,14],5:[15,25],10:[28,45]};
+
+const EVT=[
+  {id:'windstorm',cat:'weather',typ:'ch',once:true,min:1,prob:.85,
+   ttl:'Windstorm Knocks Over Your Sign!',
+   desc:'Fierce gusts knocked your advertising sign down. Customers can barely tell you\'re open.',
+   ch:[{l:'Fix the sign ($1.00)',d:'Pay $1 to remount it. Normal visibility today.',f:g=>{g.cash-=1;g.tc+=1;}},
+       {l:'Leave it down (free)',d:'Save $1, but lose ~35% of walk-by customers.',f:g=>{g.evm*=.65;}}],
+   les:'Spending $1 to prevent $8 in lost sales is almost always worth it. The math tells the story, not your gut.',
+   quiz:{q:'Spending $1 to save $8 in lost sales gives an ROI of:',opts:['700%','100%','800%','$7'],ans:0,exp:'ROI = (Gain − Cost) ÷ Cost × 100%. You spent $1 and saved $8 in lost sales, so Net Gain = $7. ROI = $7 ÷ $1 × 100% = 700%. Any positive ROI means the decision paid off. 700% is exceptional — most businesses celebrate 20% ROI.'},sc:'windy'},
+  {id:'ice_delay',cat:'supply',typ:'pas',once:true,min:2,prob:.75,
+   ttl:'Ice Delivery Delayed!',
+   desc:'Your ice supplier didn\'t show. You\'re serving warm lemonade. Customer enthusiasm drops visibly.',
+   f:g=>{g.evm*=.62;rp(-6);},
+   les:'Supply chain failures: one missing ingredient disrupts the whole operation. Major companies maintain backup suppliers for this reason.',sc:'rainy'},
+  {id:'bees',cat:'funny',typ:'pas',once:true,min:3,prob:.7,
+   ttl:'🐝 Massive Bee Swarm Attacks!',
+   desc:'A catastrophic bee swarm found your sugary stand. Customers are running. One bee is just sitting on your sign like he owns it.',
+   snd:'buzz',f:g=>{g.evm*=.22;rp(-5);},
+   les:'Operational disruptions destroy even perfectly planned days. This is why businesses maintain emergency funds.',sc:'bees'},
+  {id:'sugar',cat:'supply',typ:'ch',once:true,min:2,prob:1.0,
+   ttl:'Sugar Shortage Hits the City!',
+   desc:'Citywide sugar shortage. Your supplier just called: sugar prices tripled. Decide immediately.',
+   ch:[{l:'Buy premium sugar (+$0.04/cup × 3 days)',d:'Maintain quality. Costs rise, customers notice nothing.',f:g=>{g.mods.im=1.4;g.mods.imd=3;}},
+       {l:'Reduce sweetness (save money, lose rep)',d:'Noticeably less sweet. Customers complain and rep drops.',f:g=>{g.evm*=.80;rp(-10);}}],
+   les:'Supply disruptions force a choice: absorb cost (lower margin) or pass to customers (risk losing sales). Both have serious consequences.',
+   quiz:{q:'Absorbing a cost increase to protect quality is called:',opts:['Margin compression','Price gouging','Inventory spoilage','Demand elasticity'],ans:0,exp:'Margin compression happens when your costs rise but you choose NOT to raise prices — to protect customer relationships. Your profit per cup (your margin) gets squeezed smaller. The opposite choice — raising prices — risks losing customers. Both options have real trade-offs, which is why supply chain disruptions are so stressful for real businesses.'},sc:'wildcard'},
+  {id:'lemon_fail',cat:'supply',typ:'ch',once:true,min:3,prob:.85,
+   ttl:'Regional Lemon Crop Failure!',
+   desc:'A lemon blight wiped out local crops. Ingredient costs spike 50% for two days.',
+   ch:[{l:'Buy expensive lemons (+$0.05/cup × 2 days)',d:'Quality unchanged. Margin shrinks, customers stay happy.',f:g=>{g.mods.im=1.5;g.mods.imd=2;}},
+       {l:'Use artificial lemon powder (cheap)',d:'Customers taste the difference. Serious reputation damage.',f:g=>{rp(-14);g.evm*=.72;}}],
+   les:'Commodity price volatility: choose between protecting margin and protecting quality. Companies use financial hedging to lock in future prices.',sc:'wildcard'},
+  {id:'bulk',cat:'supply',typ:'ch',once:true,min:1,prob:1.0,
+   ttl:'Bulk Discount Opportunity!',
+   desc:'Supplier offers: pay $5 now for 25% off ingredient costs for the next 4 days.',
+   ch:[{l:'Take the deal ($5 now, 25% off × 4 days)',d:'Break-even: ~67 cups total over 4 days. Worth it if you produce enough.',f:g=>{g.cash-=5;g.tc+=5;g.mods.im=.75;g.mods.imd=4;}},
+       {l:'Pass — pay normal prices',d:'No upfront cost. Lower risk. Pay per cup as usual.',f:g=>{}}],
+   les:'Volume discounts need break-even math: Upfront Cost ÷ Per-Cup Savings = Cups Needed to Break Even.',
+   quiz:{q:'A deal costs $5 and saves $0.025/cup. Break-even cups:',opts:['200 cups','50 cups','100 cups','500 cups'],ans:0,exp:'Break-even = Upfront Cost ÷ Savings Per Cup = $5 ÷ $0.025 = 200 cups. If you produce fewer than 200 cups total over the deal period, you lose money on the deal. More than 200 cups and you come out ahead. This is the same math companies use when deciding whether to buy equipment, hire staff, or invest in bulk supplies.'},sc:'wildcard'},
+  {id:'crowd',cat:'customer',typ:'pas',once:false,min:1,prob:.85,
+   ttl:'Major Event Brings Huge Crowds!',
+   desc:'A 5K run, cookout, and outdoor movie are all nearby. Hundreds of thirsty people are streaming past your stand.',
+   snd:'cheer',f:g=>{g.evm*=2.0;},
+   les:'Positioning strategy: place your business where target customers already gather.',sc:'crowd'},
+  {id:'5k',cat:'customer',typ:'pas',once:true,min:2,prob:.8,
+   ttl:'Charity 5K Run Passes By!',
+   desc:'Four hundred exhausted runners crossed the finish line directly in front of your stand. Their need for fluids is urgent.',
+   snd:'cheer',f:g=>{g.evm*=2.4;},
+   les:'Inelastic demand: when customers desperately need something with few alternatives, they pay almost any price.',sc:'crowd'},
+  {id:'fieldtrip',cat:'funny',typ:'pas',once:true,min:1,prob:.8,
+   ttl:'🚌 School Field Trip Bus Stops!',
+   desc:'A bus of extremely thirsty third-graders stopped directly in front of your stand. Their teacher looks very relieved.',
+   snd:'cheer',f:g=>{g.evm*=1.88;},
+   les:'Captive markets: when customers have limited alternatives and high need, demand surges dramatically.',sc:'crowd'},
+  {id:'picky',cat:'customer',typ:'ch',once:false,min:2,prob:.75,
+   ttl:'Picky Customer Complains Loudly!',
+   desc:'"EXCUSE ME — this lemonade is WAY too sour. I want a refund." Several nearby people are listening carefully.',
+   ch:[{l:'Give the refund',d:'Refund the cup price. Customer satisfied. Reputation protected.',f:g=>{const r=PRICES[g.pi];g.cash-=r;g.tc+=r;rp(6);}},
+       {l:'Refuse politely',d:'Customer leaves upset and posts about it online.',f:g=>{rp(-14);g.evm*=.82;}}],
+   les:'Customer service: the short-term cost of a refund is almost always less than the long-term cost of damaged reputation.',sc:'wildcard'},
+  {id:'health_trend',cat:'customer',typ:'ch',once:true,min:3,prob:.78,
+   ttl:'Low-Sugar Health Trend Goes Viral!',
+   desc:'A local influencer posted "sugar is the enemy." Everyone wants low-sugar options now.',
+   ch:[{l:'Launch low-sugar version (−$0.02/cup cost, +20% customers)',d:'Cheaper AND attracts more health-conscious buyers.',f:g=>{g.mods.im=Math.max(.5,g.mods.im*.8);g.mods.imd=3;g.evm*=1.2;rp(9);}},
+       {l:'Keep the original recipe',d:'Stay on brand. Health-focused customers skip you today.',f:g=>{g.evm*=.88;}}],
+   les:'Market adaptation: companies that monitor trends and pivot gain market share from those who ignore signals.',sc:'viral'},
+  {id:'wom',cat:'customer',typ:'pas',once:false,min:2,prob:.72,
+   req:g=>G.rep>=52,ttl:'Word of Mouth is Spreading!',
+   desc:'Someone posted a glowing review on the neighborhood app. People are specifically seeking out your stand.',
+   snd:'cheer',f:g=>{g.evm*=1.42;rp(8);},
+   les:'Word-of-mouth is the most trusted and cost-effective marketing that exists.',sc:'viral'},
+  {id:'bad_rev',cat:'customer',typ:'pas',once:false,min:3,prob:.7,
+   req:g=>G.rep<55,ttl:'Bad Review is Spreading!',
+   desc:'Someone posted: "This lemonade stand felt judgmental. 2 stars." It\'s getting likes and traffic drops.',
+   f:g=>{g.evm*=.62;rp(-12);},
+   les:'A single widely-shared negative review can cause measurable sales decline. Online reputation management is now a major profession.',sc:'lossface'},
+  {id:'rival',cat:'comp',typ:'pas',once:true,min:3,prob:.88,
+   req:g=>!G.mods.comp,ttl:'"Orangeade" Opens Across the Street!',
+   desc:'A rival stand opened directly opposite you. They sell orange juice. Their sign misspelled "refreshing." They aren\'t bothered.',
+   f:g=>{G.mods.comp=true;rp(-4);},
+   les:'When competitors enter, respond with better quality, pricing, marketing, or differentiation — not panic.',sc:'rival'},
+  {id:'rival_cut',cat:'comp',typ:'ch',once:true,min:4,prob:.85,
+   req:g=>!!G.mods.comp,ttl:'Competitor Slashes Prices!',
+   desc:'"Orangeade" dropped to $0.50/cup. Customers are walking past your stand toward theirs.',
+   ch:[{l:'Match price (reduce 2 steps)',d:'Less profit per cup, more customers retained.',f:g=>{G.pi=Math.max(0,G.pi-2);}},
+       {l:'Hold price — compete on quality',d:'Quality-focused customers stay; price-hunters leave.',f:g=>{g.evm*=.75;rp(4);}},
+       {l:'Fight back with advertising ($3)',d:'Spend $3. Emphasize quality vs. cheap competition.',f:g=>{g.cash-=3;g.tc+=3;g.evm*=1.12;}}],
+   les:'Price wars destroy margins. Competing on quality and brand trust is usually the more sustainable strategy.',sc:'rival'},
+  {id:'rival_secret',cat:'comp',typ:'ch',once:true,min:5,prob:.8,
+   req:g=>!!G.mods.comp,ttl:'Competitor Adds "Secret Ingredient"!',
+   desc:'"Orangeade" claims a mystery superfood. Some of your customers are switching to try it.',
+   ch:[{l:'Launch Mint Lemonade (+$0.02/cup)',d:'Real differentiation. Lasting customer curiosity.',f:g=>{g.mods.im=Math.min(g.mods.im*1.2,2);g.mods.imd=9999;g.evm*=1.2;G.mods.dm=Math.min((G.mods.dm||1)*1.15,2.5);G.mods.dmd=9999;rp(10);}},
+       {l:'Mock them on social (50/50)',d:'Risky: viral in your favor, or embarrassing.',f:g=>{if(Math.random()<.5){g.evm*=1.3;rp(7);}else{g.evm*=.75;rp(-10);}}},
+       {l:'Ignore it',d:'Loyal customers return. New customers might not.',f:g=>{g.evm*=.92;}}],
+   les:'The best response to gimmicks is genuine innovation — not imitation.',sc:'rival'},
+  {id:'rival_shut',cat:'comp',typ:'pas',once:true,min:6,prob:.72,
+   req:g=>!!G.mods.comp,ttl:'"Orangeade" Fails Health Inspection!',
+   desc:'They failed spectacularly. Stand immediately closed. All their customers need somewhere to go. You\'re right there.',
+   snd:'cheer',f:g=>{G.mods.comp=false;g.evm*=1.45;rp(6);},
+   les:'Businesses that maintain quality and compliance are positioned to capture windfall when competitors exit.',sc:'rival'},
+  {id:'chickfila',cat:'comp',typ:'pas',once:true,min:7,prob:.6,
+   ttl:'Chick-fil-A Opens Nearby. Selling Lemonade.',
+   desc:'14 registers. Air conditioning. Fresh-squeezed lemonade. You have a folding table and sheer determination.',
+   f:g=>{g.evm*=.48;rp(-6);},
+   les:'Large competitors have economies of scale that make price competition nearly impossible. Small business survival comes from community relationships and unique local value.',sc:'rival'},
+  {id:'viral',cat:'mkt',typ:'pas',once:true,min:2,prob:.78,
+   req:g=>G.rep>=42,ttl:'You Just Went Viral!!! 🎉',
+   desc:'Someone posted "the lemonade of the summer" — 22,000 likes. Your phone won\'t stop buzzing.',
+   snd:'cheer',f:g=>{G.mods.dm=Math.min((G.mods.dm||1)*2.2,3.0);G.mods.dmd=3;rp(20);},
+   les:'Viral marketing: one widely-shared piece of content can reach more people than thousands in traditional advertising.',sc:'viral'},
+  {id:'news',cat:'mkt',typ:'pas',once:true,min:3,prob:.68,
+   ttl:'Local TV News Crew Shows Up!',
+   desc:'A reporter films a segment on young entrepreneurs. You are now live on Channel 7. Your entire family is watching.',
+   snd:'cheer',f:g=>{G.mods.dm=Math.min((G.mods.dm||1)*1.85,3.0);G.mods.dmd=2;rp(16);},
+   les:'Earned media: free news coverage generates more trust than paid advertising. This is why PR is a multi-billion dollar industry.',sc:'news'},
+  {id:'cheap_ingr',cat:'ethics',typ:'ch',once:true,min:4,prob:.78,
+   ttl:'Use Cheaper (Fake) Ingredients?',
+   desc:'A discount supplier sells artificial lemon powder — cuts costs 60%. Quality is noticeably worse, but customers wouldn\'t know immediately.',
+   ch:[{l:'Stick with real lemons',d:'Keep quality and integrity.',f:g=>{rp(6);}},
+       {l:'Switch to artificial (save 60%)',d:'Short-term profit boost. But reputation suffers over time.',f:g=>{g.mods.im=.4;g.mods.imd=9999;rp(-15);G.mods.dm=Math.max(.5,(G.mods.dm||1)*.85);G.mods.dmd=9999;}}],
+   les:'Cutting quality for short-term margin destroys long-term brand trust. Many companies faced boycotts when customers discovered hidden quality compromises.',sc:'wildcard'},
+  {id:'price_gouge',cat:'ethics',typ:'ch',once:true,min:3,prob:.8,
+   req:g=>['heatwave','scorching'].includes(G.wx&&G.wx.id),
+   ttl:'Price Gouge During the Heat Emergency?',
+   desc:'It\'s a dangerous heat wave and customers are desperate. You could raise prices dramatically. But should you?',
+   ch:[{l:'Keep fair prices',d:'Normal price. Good business. Reputation enhanced.',f:g=>{rp(12);}},
+       {l:'Double prices during the emergency',d:'Maximizes today\'s revenue. Customers remember. News crew is nearby.',f:g=>{G.pi=Math.min(9,G.pi+2);rp(-18);}}],
+   les:'Price gouging during emergencies is profitable short-term but devastating long-term — and illegal in many states.',
+   quiz:{q:'Charging emergency prices when customers have no alternatives is called:',opts:['Price gouging','Price elasticity','Demand management','Supply constraint'],ans:0,exp:'Price gouging is charging unfairly high prices during an emergency when customers have no alternatives. Beyond being unethical, it is actually ILLEGAL in Pennsylvania and most states during declared emergencies. Businesses caught price gouging face massive fines, lawsuits, and permanent reputation damage that far outweighs any short-term profit.'},sc:'scorching'},
+  {id:'charity',cat:'ethics',typ:'ch',once:true,min:3,prob:.72,
+   ttl:'Donate Profits to Charity?',
+   desc:'A local animal shelter is raising funds. Donate $2 and post about it — boost reputation significantly.',
+   ch:[{l:'Donate $2 and post about it',d:'Cost $2. Reputation boost brings more future customers.',f:g=>{g.cash-=2;g.tc+=2;rp(16);G.mods.dm=Math.min((G.mods.dm||1)*1.2,2.5);G.mods.dmd=3;}},
+       {l:'Keep the profits',d:'Save $2. No reputation boost.',f:g=>{}}],
+   les:'Corporate social responsibility (CSR): giving back often returns measurable customer loyalty.',sc:'charity'},
+  {id:'hire_friend',cat:'ethics',typ:'ch',once:true,min:5,prob:.75,
+   ttl:'Hire a Friend to Help?',
+   desc:'Business is booming. Your friend offers to help. Pay fair wages — or accept "volunteer" help?',
+   ch:[{l:'Pay $3/day fair wage',d:'Motivated helper. Handle 30% more customers.',f:g=>{g.cash-=3;g.tc+=3;G.mods.dm=Math.min((G.mods.dm||1)*1.3,2.5);G.mods.dmd=9999;rp(7);}},
+       {l:'Accept unpaid "help"',d:'Friend resents it quickly. Quality drops.',f:g=>{g.evm*=1.1;rp(-6);}}],
+   les:'Fair wages create motivated employees. Underpaid labor creates resentment, turnover, and legal risk.',sc:'crowd'},
+  {id:'influencer',cat:'funny',typ:'ch',once:true,min:2,prob:.72,
+   ttl:'"LemonReviewsWithBryce" Shows Up!',
+   desc:'A lemonade influencer with 94,000 subscribers arrives with a camera. He\'s about to rate you live.',
+   ch:[{l:'Give him a free premium cup',d:'He rates it 9.2/10. Video goes live. Massive exposure.',f:g=>{rp(18);G.mods.dm=Math.min((G.mods.dm||1)*1.8,3.0);G.mods.dmd=3;}},
+       {l:'Charge full price (business is business)',d:'He gives 6.1/10: "wouldn\'t give me a sample." Mixed results.',f:g=>{rp(-5);g.evm*=1.2;}}],
+   les:'Giving influencers complimentary product in exchange for coverage is a calculated marketing investment. The ROI can be enormous.',sc:'influencer'},
+  {id:'aliens',cat:'funny',typ:'pas',once:true,min:4,prob:.45,
+   ttl:'👽 Aliens Land. They Only Drink Lemonade.',
+   desc:'This is not a drill. A spacecraft landed at the end of your street. They exited. They are pointing at your stand. Very thirsty.',
+   snd:'cheer',f:g=>{g.evm*=2.8;rp(5);},
+   les:'Unpredictable demand spikes happen. Black Friday, viral moments, and major events can spike demand 3x overnight. Are you ever ready?',sc:'wildcard'},
+  {id:'sibling',cat:'funny',typ:'pas',once:true,min:2,prob:.65,
+   ttl:'Your Little Sibling "Improves" the Recipe',
+   desc:'You stepped away 3 minutes. Your sibling added pickle juice and ketchup. Some batches are unservable. The ones served are being returned.',
+   f:g=>{g.lost=Math.floor(G.cups*.28);rp(-8);},
+   les:'Quality control: businesses establish strict production protocols so one improvisation doesn\'t ruin an entire batch.',sc:'sibling'},
+  {id:'dog',cat:'funny',typ:'pas',once:true,min:2,prob:.65,
+   ttl:'🐶 A Dog Drinks Your Lemonade Supply',
+   desc:'A golden retriever named Biscuit found a way under your table. He drank directly from the pitcher. He is not sorry.',
+   f:g=>{g.lost=Math.floor(G.cups*.35);rp(-5);},
+   les:'Inventory loss happens due to theft, accidents, and damage. Businesses factor "shrinkage" into cost projections.',sc:'dog'},
+  {id:'mint_accident',cat:'funny',typ:'ch',once:true,min:4,prob:.68,
+   ttl:'You Accidentally Invent Mint Lemonade!',
+   desc:'You knocked mint leaves into the whole batch. Customers are trying it. Reactions are... surprisingly positive.',
+   ch:[{l:'Embrace Mint Lemonade as your specialty!',d:'Launch as your secret formula. Differentiation unlocked.',f:g=>{G.mods.dm=Math.min((G.mods.dm||1)*1.45,2.5);G.mods.dmd=9999;rp(14);}},
+       {l:'Drain the batch and start fresh',d:'Lose the contaminated cups. Maintain the classic.',f:g=>{g.lost=Math.min(20,Math.floor(G.cups*.4));}}],
+   les:'Accidental innovation: Post-it Notes, microwaves, and penicillin were all invented by mistake. Recognizing a happy accident is a real entrepreneurial skill.',sc:'mint'},
+  {id:'wildcard_dbl',cat:'wildcard',typ:'ch',once:true,min:5,prob:.6,
+   ttl:'🎲 Wild Card: Double or Nothing!',
+   desc:'A mysterious person offers: flip a coin. Heads = double your cash. Tails = lose 40%. Completely voluntary.',
+   ch:[{l:'Take the bet',d:'50% to double. 50% to lose 40%. What does expected value say?',f:g=>{if(Math.random()<.5){g.cash*=2;SND.fanfare();}else{g.cash=+(g.cash*.6).toFixed(2);SND.loss();}}},
+       {l:'Pass — this is a business, not a casino',d:'Smart. Expected value is slightly negative. Stable operations matter.',f:g=>{rp(3);}}],
+   les:'Expected value and risk management: this bet has near-zero expected gain but real downside risk. Avoiding unnecessary risk is wisdom, not cowardice.',
+   quiz:{q:'The average outcome considering all probabilities is called:',opts:['Expected value','Sunk cost','Marginal revenue','Break-even point'],ans:0,exp:'Expected value calculates the average result of a decision by multiplying each possible outcome by its probability. For the coin flip: (50% × doubling your cash) + (50% × losing 40%) = a result that is actually slightly negative. Smart businesses use expected value to evaluate risks — not gut feelings. If the expected value is negative, walk away.'},sc:'wildcard'},
+  {id:'time_expand',cat:'wildcard',typ:'ch',once:true,min:6,prob:.6,
+   req:g=>G.days-G.day>=3,ttl:'Expand to a Second Location?',
+   desc:'A neighbor wants to partner for a second stand — $8 upfront for +40% daily customers for the rest of the game.',
+   ch:[{l:'Open second stand ($8)',d:'High upfront. 40% boost compounds if enough days remain.',f:g=>{g.cash-=8;g.tc+=8;G.mods.dm=Math.min((G.mods.dm||1)*1.4,3.0);G.mods.dmd=9999;}},
+       {l:'Decline — stay focused',d:'Save $8. Keep current operation strong.',f:g=>{}}],
+   les:'Scaling a business: expanding when demand exists can multiply profits, but premature expansion is one of the most common small business failures.',sc:'wildcard'},
+  {id:'hotdog',cat:'funny',typ:'pas',once:true,min:5,prob:.6,
+   ttl:'Hot Dog Cart Opens Right Next to You',
+   desc:'A hot dog cart set up two feet from your stand. Customers now buy hot dogs AND lemonade together. Traffic increases.',
+   snd:'cheer',f:g=>{g.evm*=1.35;},
+   les:'Complementary businesses help each other by clustering foot traffic. This is why restaurants and retail stores cluster together.',sc:'crowd'},
+  {id:'school_out',cat:'customer',typ:'pas',once:true,min:4,prob:.75,
+   ttl:'School Let Out Early — Kids Everywhere!',
+   desc:'A water pipe burst at the middle school. Kids are released early and flooding the neighborhood. Thirsty, chaotic, spending lunch money.',
+   snd:'cheer',f:g=>{g.evm*=1.65;},
+   les:'Unplanned demand spikes require flexibility. Businesses that scale up quickly capture opportunities; others lose sales forever.',sc:'crowd'},
+  {id:'flashy_sign',cat:'mkt',typ:'ch',once:true,min:2,prob:.8,
+   ttl:'Professional Sign Upgrade Opportunity!',
+   desc:'A local artist offers to make you a beautiful professional sign for $4 — permanently boosts visibility for the rest of the game.',
+   ch:[{l:'Commission the sign ($4)',d:'One-time cost. Permanent +15% customer boost every remaining day.',f:g=>{g.cash-=4;g.tc+=4;G.mods.dm=Math.min((G.mods.dm||1)*1.15,2.5);G.mods.dmd=9999;}},
+       {l:'Keep the handmade sign',d:'Save $4 now.',f:g=>{}}],
+   les:'Capital investment: spending money now to generate long-term returns is the core of business investment decisions.',sc:'sunny'},
+  {id:'honest_ad',cat:'ethics',typ:'ch',once:true,min:2,prob:.75,
+   ttl:'Honest vs. Misleading Advertising?',
+   desc:'You could post "100% Fresh-Squeezed" (technically false) for more traffic — or use accurate advertising.',
+   ch:[{l:'Honest ad: "Fresh, cold, delicious"',d:'Accurate. Customers trust it. Reputation builds steadily.',f:g=>{rp(8);g.evm*=1.1;}},
+       {l:'Exaggerated claims for more traffic',d:'Boosts traffic today. Disappointed customers become your worst critics.',f:g=>{g.evm*=1.3;rp(-12);}}],
+   les:'Misleading claims can trigger FTC action and devastating public backlash. The Federal Trade Commission specifically prosecutes false advertising.',sc:'viral'},
+];
+
+const LESSONS=[
+  {term:'Revenue, Cost & Profit',body:'Revenue is every dollar from customers. Costs are everything spent to operate. Profit = Revenue − Costs. This is the most fundamental equation in all of business.',teach:'Did today\'s revenue beat today\'s costs? Every green number is a lesson. Every red loss is one too.'},
+  {term:'Supply & Demand',body:'Supply is what you produce. Demand is what customers want to buy. When price rises, fewer people buy (Law of Demand). The market "clears" where supply meets demand.',teach:'Notice how customer count shifts when you change price. Higher prices earn more per cup but attract fewer buyers.'},
+  {term:'External Factors & Market Conditions',body:'Weather, nearby events, the economy, and random surprises all affect sales. Smart businesses plan for a range of scenarios, not just the best case.',teach:'Today\'s weather was outside your control. Plan for it: don\'t over-produce when the forecast looks rough.'},
+  {term:'Marketing ROI (Return on Investment)',body:'ROI = (Extra Revenue − Ad Cost) ÷ Ad Cost × 100%. Spend $2, earn $8 extra: ROI = 300%. Not all advertising is worth the cost.',teach:'Compare revenue on days you advertised vs. days you didn\'t. Was the extra traffic worth what you spent?'},
+  {term:'Inventory Management & Waste',body:'Too much stock: waste ingredient costs on cups with zero revenue. Too little: run out and lose paying customers. Optimal = matching supply precisely to expected demand.',teach:'For every unsold cup: those ingredients cost real money and brought in $0.'},
+  {term:'Break-Even Analysis',body:'Break-even point is where Revenue = Total Costs exactly. Formula: Break-Even Cups = Total Costs ÷ Price Per Cup. Every cup above break-even is pure profit.',teach:'Before opening tomorrow: divide expected costs by planned price. That\'s the minimum cups you must sell.'},
+  {term:'Overhead & Fixed Costs',body:'Fixed costs (overhead) are daily expenses regardless of whether you sell anything — rent, permits, equipment. They must be covered before any profit is possible.',teach:'Your daily stand rental came out before you earned any profit. Higher overhead means needing more sales just to break even.'},
+  {term:'Reputation Capital',body:'Reputation is your long-term brand value built through consistent quality. High reputation multiplies future demand. It\'s built slowly and lost quickly.',teach:'Track your reputation score over the week. How does it correlate with your daily customer count?'},
+  {term:'Competition Strategy',body:'When competitors enter your market, respond with: price competition, quality differentiation, increased marketing, niche positioning, or product innovation. Price wars are usually the worst option.',teach:'If a competitor entered your market, how did you respond? What strategy seemed most effective?'},
+  {term:'Price Elasticity of Demand',body:'Price elasticity measures how much demand changes when price changes. Elastic: big drop in buyers when price rises. Inelastic: buyers keep buying even at higher prices.',teach:'Is lemonade elastic or inelastic? Try dramatically different prices across runs and compare the results.'},
+  {term:'Loans, Interest & Capital',body:'Borrowing allows faster growth but creates debt with interest. Net return = Revenue Generated − Loan Repayment. Interest is the cost of borrowing money.',teach:'If you took a loan: did your extra cash generate enough extra profit to cover the interest and still leave you ahead?'},
+  {term:'Supply Chain Risk Management',body:'When one link in your supply chain breaks, the whole operation suffers. Smart businesses maintain buffer stock and backup suppliers.',teach:'Which supply disruptions hurt most this week? What backup plans would have helped?'},
+  {term:'Ethical Decision Making',body:'Business decisions have ethical dimensions: honest advertising, fair pricing, quality transparency, and fair wages. Ethical businesses build stronger long-term reputations.',teach:'Review the ethical choices you faced this week. Which decisions felt right? What long-term consequences emerged?'},
+  {term:'Risk vs. Reward',body:'Every decision involves risk. More inventory = higher upside, bigger loss if demand is low. Great entrepreneurs don\'t avoid risk — they calculate it, manage it, and take smart risks.',teach:'What was your riskiest decision? Did the math support it? What would you do differently?'},
+  {term:'Capital Investment & ROI',body:'Spending money now to earn more later is investment. ROI = Net Gain ÷ Investment Cost × 100%. A $5 investment earning $20 extra has 300% ROI.',teach:'Identify any investments you made. Calculate the actual ROI based on your results.'},
+  {term:'Customer Lifetime Value',body:'A loyal customer who returns 10 times is worth 10× more than a one-time buyer. Businesses focused on long-term relationships consistently outperform those chasing short-term sales.',teach:'How much were repeat customers actually worth over the whole week?'},
+  {term:'Market Positioning',body:'Positioning is where you place yourself in the customer\'s mind: premium quality, best value, most convenient, or most fun. Clear positioning makes marketing easier.',teach:'How did your stand position itself versus competitors? Premium or value? How did customers respond?'},
+  {term:'Cash Flow Management',body:'Profit ≠ Cash Flow. You can be profitable overall but run out of cash on a specific day if costs are front-loaded. Running out of cash means your business stops.',teach:'Were there days you nearly ran out of cash despite being profitable overall? How would you manage cash differently?'},
+  {term:'Economies of Scale',body:'As production increases, per-unit costs often decrease. Making 100 cups may cost less per cup than making 10, due to bulk purchasing and spreading fixed costs.',teach:'Did your per-cup cost change on high-volume vs. low-volume days? What drove those differences?'},
+  {term:'Competitive Advantage',body:'Your competitive advantage is what makes you different and better: quality, price, location, service, reputation, or innovation. Without a genuine advantage, competing is very difficult.',teach:'What was your stand\'s competitive advantage? Was it enough? What would you strengthen next time?'},
+  {term:'Business Strategy & Adaptation',body:'Strategy is your long-term plan for winning in the market. Great strategy requires reading market signals, adapting to change, and continuously improving.',teach:'Summarize your overall business strategy this week. What worked? What failed? What is your strategy for next time?'},
+];
+
+const QUIZZES=[
+  {q:'Revenue minus Costs equals what?',opts:['Profit (or Loss)','Overhead','Break-Even','Cash Flow'],ans:0,
+   exp:'Profit is what remains after paying ALL costs. If Revenue is $10 and Costs are $7, Profit = $3. If costs exceed revenue you have a loss. This single equation is the foundation of every business on Earth — master it and you understand more than most adults.'},
+  {q:'You make 50 cups and sell 35. How many cups were wasted?',opts:['15 cups','35 cups','50 cups','85 cups'],ans:0,
+   exp:'50 minus 35 = 15 unsold cups. Each one cost you real ingredient money and earned exactly zero dollars back. This is inventory management in action: produce as close to actual demand as possible, because every unsold unit is money thrown away.'},
+  {q:'When price goes UP, demand typically goes:',opts:['Down — Law of Demand','Up','Stays the same','Doubles'],ans:0,
+   exp:'This is the Law of Demand, one of the most important principles in economics. As price rises, fewer customers are willing or able to buy. You saw this every time you moved the price slider — higher price meant fewer customers showing up, even on hot days.'},
+  {q:'The cost you pay daily even if you sell nothing is called:',opts:['Overhead / Fixed Cost','Variable Cost','Revenue','Profit Margin'],ans:0,
+   exp:'Overhead (also called Fixed Costs) are expenses that do not change based on how much you produce or sell. Your daily stand rental is overhead. You pay it whether you sell 0 cups or 100 cups. You must earn enough revenue to cover overhead BEFORE you can make any profit at all.'},
+  {q:'Break-even means Revenue equals:',opts:['Total Costs exactly','Zero','Profit','Yesterday revenue'],ans:0,
+   exp:'Break-even is the exact point where Revenue = Total Costs, meaning Profit = $0. Not losing money, but not making any either. The formula is: Break-Even Cups = Total Costs divided by Price Per Cup. Every cup sold ABOVE that number is pure profit. Every cup below it adds to your loss.'},
+  {q:'Advertising ROI measures:',opts:['Extra revenue per dollar spent on ads','Total revenue earned','Daily customer count','Price per cup charged'],ans:0,
+   exp:'ROI stands for Return on Investment. For advertising: ROI = (Extra Revenue minus Ad Cost) divided by Ad Cost, times 100%. Example: spend $2 on flyers, earn $10 extra in sales. ROI = ($10 minus $2) divided by $2 times 100% = 400%. That means every $1 spent returned $4. If ROI is negative, the ad lost you money.'},
+  {q:'Word-of-mouth marketing is powerful because:',opts:['It is trusted and costs almost nothing','It reaches billions instantly','It is always positive','It replaces all other marketing'],ans:0,
+   exp:'People trust recommendations from real people far more than paid ads. When a friend says this lemonade is amazing, you believe them. When a billboard says the same thing, you are skeptical. Word-of-mouth is free AND more persuasive. One happy customer who tells five friends is often worth more than a $100 advertising campaign.'},
+  {q:'You borrowed $25 at 15 percent interest. Total amount owed:',opts:['$28.75','$25.15','$40.00','$37.50'],ans:0,
+   exp:'$25 times 15% = $3.75 in interest. Total owed = $25 plus $3.75 = $28.75. This is how all loans work: you repay the original amount (called the principal) PLUS interest (the fee for borrowing the money). Always calculate whether your borrowed money will earn more than it costs you in interest charges.'},
+  {q:'Competing on quality rather than lowering price is called:',opts:['Differentiation strategy','Starting a price war','Demand shock','Supply squeeze'],ans:0,
+   exp:'Differentiation means making your product stand out by being BETTER or DIFFERENT, not just cheaper. Price wars hurt everyone: you both cut prices, both lose profit margin, and customers still might not prefer you. Apple does not compete on price. Your lemonade stand can compete on taste, service, reputation, or a unique product like Mint Lemonade.'},
+  {q:'A captive market means customers:',opts:['Have few alternatives and high need','Are literally locked up somewhere','Must buy at any price you set','Exclusively prefer your product'],ans:0,
+   exp:'A captive market exists when customers have very few alternatives but still urgently need the product. Think about airport restaurants, stadium food, or the finish line of a 5K race. Businesses in captive markets can charge higher prices because customers have nowhere else to turn. You experienced this in the game when a crowd event hit your stand.'},
+];
+
+// STATE
+let G={};let selD='easy',selL=0,qIdx=0;
+function initG(diff,name,cls,stand,loan){
+  G={name,cls,stand,diff,loan,cash:20+loan,day:1,days:DIFFS[diff].days,
+    rep:50,totRev:0,totCost:0,cups:20,pi:3,ad:0,doSamp:false,doQual:false,
+    mods:{dm:1,dmd:0,im:1,imd:0,comp:false},doneEvts:new Set(),history:[],
+    wx:null,curEvt:null,tc:0,evm:1,lost:0};
+}
+// HELPERS
+function el(id){return document.getElementById(id);}
+function f(n){return(n<0?'-$':'$')+Math.abs(n).toFixed(2);}
+function rp(d){if(G.diff==='easy')return;G.rep=Math.max(0,Math.min(100,G.rep+d));}
+function show(id){document.querySelectorAll('.scr').forEach(s=>s.classList.remove('on'));el(id).classList.add('on');}
+function bar(id,d,tot){const elem=el(id);if(!elem)return;elem.innerHTML='';for(let i=1;i<=tot;i++){const p=document.createElement('div');p.className='dp'+(i<d?' dn':i===d?' nw':'');elem.appendChild(p);}}
+function updHdr(){el('ghdr').style.display='flex';el('ghdr-nm').textContent=G.stand;el('ghdr-sb').textContent=`Day ${G.day} of ${G.days} · ${DIFFS[G.diff].lbl}`;el('ghdr-cash').textContent=f(G.cash);const r=el('ghdr-rep');if(G.diff!=='easy'){r.style.display='block';el('ghdr-rv').textContent=Math.round(G.rep);}else r.style.display='none';}
+function rollWx(){const t=WW.reduce((a,b)=>a+b,0);let r=Math.random()*t;for(let i=0;i<WX.length;i++){r-=WW[i];if(r<=0)return WX[i];}return WX[1];}
+function histChart(id){const elem=el(id);if(!elem)return;elem.innerHTML='';if(!G.history.length)return;const mx=Math.max(...G.history.map(h=>Math.abs(h.profit)),1);G.history.forEach((h,i)=>{const b=document.createElement('div');b.className='hbar';b.style.height=Math.max(8,Math.round(Math.abs(h.profit)/mx*62))+'px';b.style.background=h.profit>=0?'#2D7A1F':'#B83030';b.title=`Day ${i+1}: ${f(h.profit)}`;elem.appendChild(b);});}
+
+// WELCOME
+// Direct initialization - DOM is already ready since script is at bottom of body
+// Error handler for mobile debugging
+window.onerror = function(msg, src, line, col, err) {
+  var box = document.getElementById('err-box');
+  if(box) { box.style.display='block'; box.textContent='Error: '+msg+' (line '+line+')'; }
+  return false;
+};
+// Initialize game
+try {
+  var sc = document.getElementById('sc-w');
+  if(sc) sc.innerHTML = SC.stand;
+  var def = document.querySelector('.dcard.sl');
+  if(def) pickD('easy', def);
+  else pickD('easy', null);
+} catch(e) {
+  var box = document.getElementById('err-box');
+  if(box) { box.style.display='block'; box.textContent='Init error: '+e.message; }
+}
+
+function pickD(d,btn){
+  document.querySelectorAll('.dcard').forEach(c=>c.classList.remove('sl'));try{if(btn)btn.classList.add('sl');}catch(e){}
+  selD=d;el('d-expl').textContent=DIFFS[d].desc;el('concept-list').textContent=DIFFS[d].conc;
+  el('loan-sec').style.display=d==='hard'?'block':'none';
+}
+function pickL(l,btn){document.querySelectorAll('.loanc').forEach(c=>c.classList.remove('sl'));btn.classList.add('sl');selL=l;}
+function goLB(){renderLB('all');show('s-lb');}
+
+function startGame(){
+  SND.click();
+  const name=el('i-name').value.trim()||'Student';
+  const cls=el('i-class').value.trim()||'Class';
+  const stand=el('i-stand').value.trim()||'My Lemonade Stand';
+  initG(selD,name,cls,stand,selL);
+  const d=DIFFS[selD];
+  el('spec-card').style.display=d.rep?'block':'none';
+  el('qual-opt').style.display=d.qual?'block':'none';
+  el('spoil-hint').style.display=d.spoil?'block':'none';
+  beginDay();
+}
+
+// PLAN SCREEN
+const ZTIPS=['You have one day to make money. Every decision counts — no pressure!','Tip: too many cups = waste. Too few = lost sales. Find the sweet spot.','Weather changes everything. On hot days, make more and consider charging more.','Does advertising bring enough extra customers to justify the cost? Do the math.','Think before pricing. Too high = nobody buys. Too low = barely any profit.','Inventory management is real. Don\'t make 80 cups on a rainy day.','Halfway through! Review your pattern. What\'s been working?','Week two begins. You know more now than on Day 1. Use it.','Long game now. Every day compounds. Reputation matters more than ever.','Start thinking about your final numbers. What\'s your target net profit?','Supply chains, competitors, reputation — it all matters in the long game.','Two weeks in. You\'re running a real business now.','Three days left. Time to execute your best strategy.','Final stretch. Make every cup count.','Last week. Go out strong.','Think about your legacy. What will your grade say about how you ran this?','Volatility is highest now. Stay calm, stay calculated.','Your reputation is your most valuable asset at this point.','Think about what you\'d do differently if you play again.','Second-to-last day! Make it count.','FINAL DAY. Everything you\'ve learned leads to this moment. Make Zesty proud.'];
+
+function beginDay(){
+  G.wx=rollWx();G.evm=1;G.lost=0;G.doSamp=false;G.doQual=false;G.curEvt=null;G.tc=0;
+  el('p-title').textContent=`Day ${G.day} of ${G.days}`;
+  el('p-fc').textContent=G.wx.fc;
+  bar('p-bar',G.day,G.days);
+  el('p-scene').innerHTML=wxSc(G.wx);
+  if(G.wx.id==='storm')SND.thunder();
+  else if(['rainy','foggy'].includes(G.wx.id))SND.rain();
+  else if(G.wx.id==='windy')SND.wind();
+  el('p-tip').textContent=ZTIPS[Math.min(G.day-1,ZTIPS.length-1)];
+  const rc=el('p-rep-card');
+  if(G.diff!=='easy'){rc.style.display='block';el('p-repv').textContent=Math.round(G.rep)+'/100';el('p-repb').style.width=G.rep+'%';}
+  else rc.style.display='none';
+  const chips=[];
+  if(G.mods.comp)chips.push({c:'chr',t:'🍊 Rival stand active'});
+  if(G.mods.dm>1)chips.push({c:'chg',t:`+${Math.round((G.mods.dm-1)*100)}% demand boost`});
+  if(G.mods.dm<1)chips.push({c:'chr',t:`${Math.round((G.mods.dm-1)*100)}% demand penalty`});
+  if(G.mods.im>1)chips.push({c:'chr',t:`+${Math.round((G.mods.im-1)*100)}% ingredient cost`});
+  if(G.mods.im<1)chips.push({c:'chg',t:`${Math.round((1-G.mods.im)*100)}% ingredient discount`});
+  const pm=el('p-mods'),pc=el('p-chips');
+  if(chips.length){pm.style.display='block';pc.innerHTML=chips.map(c=>`<span class="chip ${c.c}">${c.t}</span>`).join('');}else pm.style.display='none';
+  el('sl-cups').value=20;el('sl-price').value=3;G.ad=0;
+  document.querySelectorAll('#ad-btns .tbtn').forEach((b,i)=>b.classList.toggle('sl',i===0));
+  el('ad-hint').textContent=ADHI[0];el('samp-btn').textContent='Off';el('qual-btn').textContent='Off';
+  G.cups=20;G.pi=3;
+  chCups();chPrice();updPrev();updHdr();show('s-plan');
+}
+
+function getIC(){return IC*G.mods.im*(G.doQual?1.03:1);}
+function chCups(){const v=+el('sl-cups').value;el('v-cups').textContent=v;G.cups=v;updPrev();}
+function chPrice(){const i=+el('sl-price').value;G.pi=i;el('v-price').textContent='$'+PRICES[i].toFixed(2);updPhint();updPrev();}
+function updPhint(){const dm=DM[PRICES[G.pi]]||1;let t='Balanced pricing — good demand expected.';if(dm>=2)t='Very low price — huge demand but low revenue per cup.';else if(dm>=1.5)t='Affordable — high demand expected.';else if(dm<=.4)t='Very high price — minimal demand.';else if(dm<=.7)t='Premium price — lower demand, higher revenue per sale.';el('price-hint').textContent=t;}
+function pickAd(a,btn){G.ad=a;document.querySelectorAll('#ad-btns .tbtn').forEach(b=>b.classList.remove('sl'));btn.classList.add('sl');el('ad-hint').textContent=ADHI[a];updPrev();}
+function togSamp(){const on=el('samp-btn').textContent==='Off';el('samp-btn').textContent=on?'On':'Off';G.doSamp=on;updPrev();}
+function togQual(){const on=el('qual-btn').textContent==='Off';el('qual-btn').textContent=on?'On':'Off';G.doQual=on;updPrev();}
+
+function updPrev(){
+  const ic=getIC(),cups=G.cups,oh=DIFFS[G.diff].oh;
+  const igC=+(cups*ic).toFixed(2),sampC=G.doSamp?+(5*ic).toFixed(2):0;
+  const tot=+(igC+G.ad+sampC+oh).toFixed(2),aft=+(G.cash-tot).toFixed(2);
+  el('ic-disp').textContent='$'+ic.toFixed(3);el('samp-c').textContent='$'+sampC.toFixed(2);
+  let h=`<div class="sr"><span class="sk">Ingredients (${cups} × $${ic.toFixed(3)})</span><span class="sv rd">${f(-igC)}</span></div>`;
+  if(oh>0)h+=`<div class="sr"><span class="sk">Daily overhead (stand rental)</span><span class="sv rd">${f(-oh)}</span></div>`;
+  if(G.ad>0)h+=`<div class="sr"><span class="sk">Advertising</span><span class="sv rd">${f(-G.ad)}</span></div>`;
+  if(G.doSamp)h+=`<div class="sr"><span class="sk">Free samples (5 cups)</span><span class="sv rd">${f(-sampC)}</span></div>`;
+  h+=`<div class="sr"><span class="sk">Cash on hand now</span><span class="sv">${f(G.cash)}</span></div>`;
+  el('cost-rows').innerHTML=h;
+  const caEl=el('cash-aft');caEl.textContent=f(aft);caEl.className=aft>=0?'am':'rd';
+  const ok=tot<=G.cash;el('p-warn').style.display=ok?'none':'block';
+  const ob=el('open-btn');ob.disabled=!ok;ob.classList.toggle('btnd',!ok);
+}
+
+function openBiz(){
+  SND.click();
+  const ic=getIC(),cups=G.cups,oh=DIFFS[G.diff].oh;
+  const igC=+(cups*ic).toFixed(2),sampC=G.doSamp?+(5*ic).toFixed(2):0;
+  G.tc=+(igC+G.ad+sampC+oh).toFixed(2);
+  G.cash=+(G.cash-G.tc).toFixed(2);
+  const ev=rollEv();
+  if(ev&&ev.typ==='ch'){G.curEvt=ev;showDec(ev);}
+  else{if(ev){G.curEvt=ev;if(ev.snd&&SND[ev.snd])SND[ev.snd]();}resolveDay();}
+}
+
+function rollEv(){
+  const eli=EVT.filter(e=>{
+    if(e.once&&G.doneEvts.has(e.id))return false;
+    if(e.min&&G.day<e.min)return false;
+    if(e.req&&!e.req(G))return false;
+    return Math.random()<(e.prob||.5);
+  });
+  if(!eli.length)return null;
+  const ev=eli[Math.floor(Math.random()*eli.length)];
+  G.doneEvts.add(ev.id);return ev;
+}
+
+function showDec(ev){
+  if(ev.snd&&SND[ev.snd])SND[ev.snd]();
+  el('dec-scene').innerHTML=evSc(ev);
+  el('dec-ttl').textContent=ev.ttl;el('dec-dsc').textContent=ev.desc;el('dec-les').textContent=ev.les;
+  const cEl=el('dec-choices');
+  cEl.innerHTML=ev.ch.map((c,i)=>`<div class="cch" onclick="makeChoice(${i})"><div class="ccl">${c.l}</div><div class="ccd">${c.d}</div></div>`).join('');
+  const qEl=el('dec-quiz');
+  if(ev.quiz){qEl.style.display='block';el('dq-txt').textContent=ev.quiz.q;el('dq-a').innerHTML=ev.quiz.opts.map((o,i)=>`<button onclick="ansQ(this,${i},${ev.quiz.ans},'dq-a')">${o}</button>`).join('');}
+  else qEl.style.display='none';
+  show('s-dec');
+}
+function makeChoice(i){SND.click();G.curEvt.ch[i].f(G);resolveDay();}
+function ansQ(btn,i,ans,gid,exp){
+  const bs=document.getElementById(gid).querySelectorAll('button');
+  bs.forEach(b=>b.disabled=true);
+  btn.classList.add(i===ans?'qr':'qw');
+  bs[ans].classList.add('qr');
+  if(exp){
+    const expId=gid.replace('-a','-exp');
+    const expEl=document.getElementById(expId);
+    if(expEl){
+      const correct=(i===ans);
+      const hd=correct?'<b style="color:#2D7A1F;font-size:16px">Correct!</b>':'<b style="color:#B83030;font-size:16px">Not quite — here is why:</b>';
+      expEl.style.display='block';
+      expEl.style.borderLeftColor=correct?'#2D7A1F':'#B83030';
+      expEl.innerHTML=hd+'<br>'+exp;
+    }
+  }
+  // Unlock the Next Day button only after the results quiz is answered
+  if(gid==='rq-a'){
+    const nb=document.getElementById('nxt-btn');
+    if(nb){nb.disabled=false;nb.classList.remove('btnd');}
+    const qg=document.getElementById('quiz-gate');
+    if(qg)qg.style.display='none';
+    // Scroll the Next button into view so student sees it unlocked
+    setTimeout(function(){if(nb)nb.scrollIntoView({behavior:'smooth',block:'nearest'});},300);
+  }
+}
+
+function resolveDay(){
+  const ev=G.curEvt;
+  if(ev&&ev.typ==='pas'&&ev.f)ev.f(G);
+  const d=DIFFS[G.diff];
+  let base=G.wx.b;
+  if(d.rep)base=Math.round(base*(G.rep/50));
+  const pDm=DM[PRICES[G.pi]]||1,compP=G.mods.comp?0.78:1;
+  const adR=ADCU[G.ad]||[0,0],adB=Math.floor(adR[0]+Math.random()*(adR[1]-adR[0]+1));
+  const smpB=G.doSamp?Math.floor(3+Math.random()*5):0,qualDm=G.doQual?1.12:1;
+  const modDm=G.mods.dm||1,evDm=G.evm||1;
+  let cust=Math.floor(base*pDm*compP*qualDm*modDm*evDm*(0.8+Math.random()*0.4))+adB+smpB;
+  cust=Math.max(0,cust);
+  const avail=Math.max(0,G.cups-(G.lost||0));
+  const sold=Math.min(cust,avail),unsold=Math.max(0,G.cups-sold-(G.lost||0));
+  const rev=+(sold*PRICES[G.pi]).toFixed(2);
+  G.cash=+(G.cash+rev).toFixed(2);G.totRev=+(G.totRev+rev).toFixed(2);G.totCost=+(G.totCost+G.tc).toFixed(2);
+  const profit=+(rev-G.tc).toFixed(2);
+  let spoiled=0;
+  if(d.spoil&&unsold>5){spoiled=unsold-5;}
+  if(d.rep){if(G.doQual)rp(5);if(G.doSamp)rp(8);if(unsold>G.cups*.4)rp(-3);if(sold===G.cups&&G.cups>0)rp(4);}
+  if(G.mods.dmd>0){G.mods.dmd--;if(G.mods.dmd<=0){G.mods.dm=1;G.mods.dmd=0;}}
+  if(G.mods.imd>0){G.mods.imd--;if(G.mods.imd<=0){G.mods.im=1;G.mods.imd=0;}}
+  G.history.push({day:G.day,rev,cost:G.tc,profit,wx:G.wx.n,ev:ev?ev.ttl:null,sold,cups:G.cups});
+  showRes(cust,sold,unsold,rev,G.tc,profit,spoiled,ev);
+}
+
+function showRes(cust,sold,unsold,rev,tc,profit,spoiled,ev){
+  SND.click();
+  if(profit>=10)SND.cash();else if(profit<-2)SND.loss();
+  el('r-title').textContent=`Day ${G.day} Results`;
+  el('r-wx').textContent=G.wx.e+' '+G.wx.n;
+  bar('r-bar',G.day,G.days);
+  const sc=profit>=3?'profitface':profit<-2?'lossface':ev?evSc(ev):'stand';
+  el('r-scene').innerHTML=SC[sc]||SC.stand;
+  // zesty
+  let z='';
+  if(profit>15)z='Dominant day! You did not come to play — you came to WIN.';
+  else if(profit>8)z='Solid profit. Your economics teacher would nod approvingly.';
+  else if(profit>3)z='Decent day. A few sharper decisions and you\'d be in great shape.';
+  else if(profit>0)z='Technically profitable! Every green number is progress.';
+  else if(profit===0)z='You broke exactly even: Revenue = Costs. That\'s the break-even point. Textbook.';
+  else if(unsold>Math.floor(G.cups*.4))z='Lots of unsold cups. The lesson: don\'t over-produce when demand is uncertain.';
+  else if(G.wx.b<=5)z='Weather was brutal today. Perfect pricing can\'t always fight a thunderstorm.';
+  else z='Rough day. Every great entrepreneur has them. What do you change tomorrow?';
+  el('r-zesty').textContent=z;
+  // event banner
+  const ew=el('r-evwrap');ew.innerHTML='';
+  if(ev){const b=document.createElement('div');b.className='evb';b.innerHTML=`<div class="evt">${ev.ttl}</div><div class="evd">${ev.desc}</div><div style="font-size:12px;color:var(--br);margin-top:6px;font-family:sans-serif;font-style:italic">${ev.les}</div>`;ew.appendChild(b);}
+  el('r-wxn').textContent=G.wx.n+' — '+G.wx.ds;el('r-cust').textContent=cust+' people';
+  el('r-sold').textContent=sold+' cups @ $'+PRICES[G.pi].toFixed(2);
+  const ur=el('r-unr');if(unsold>0){ur.style.display='flex';el('r-un').textContent=unsold+' cups';}else ur.style.display='none';
+  const sr=el('r-spr');if(spoiled>0){sr.style.display='flex';el('r-sp').textContent=spoiled+' cups spoiled overnight';}else sr.style.display='none';
+  el('r-rev').textContent=f(rev);el('r-cost').textContent=f(tc);
+  const rp2=el('r-profit');rp2.textContent=f(profit);rp2.className='mv '+(profit>=0?'gn':'rd');
+  el('r-cash').textContent=f(G.cash);
+  const rc=el('r-repc');
+  if(G.diff!=='easy'){rc.style.display='block';el('r-repv').textContent=Math.round(G.rep)+'/100';el('r-repb').style.width=G.rep+'%';el('r-repch').textContent='Reputation affects tomorrow\'s customer count.';}else rc.style.display='none';
+  const rh=el('r-hist');if(G.history.length>1){rh.style.display='block';histChart('hist-bars');}else rh.style.display='none';
+  const les=LESSONS[Math.min(G.day-1,LESSONS.length-1)];
+  el('r-lterm').textContent=les.term;el('r-lbod').textContent=les.body;el('r-ltech').textContent='Teacher note: '+les.teach;
+  const q=QUIZZES[qIdx%QUIZZES.length];qIdx++;
+  el('rq-txt').textContent=q.q;el('rq-a').innerHTML=q.opts.map((o,i)=>`<button onclick="ansQ(this,${i},${q.ans},'rq-a')">${o}</button>`).join('');
+  el('nxt-btn').textContent=G.day>=G.days?'See Final Report →':'Next Day →';
+  updHdr();show('s-res');
+}
+
+function nextDay(){SND.click();if(G.day>=G.days){gameOver();return;}G.day++;beginDay();}
+
+function gameOver(){
+  let loanRepay=0;
+  if(G.diff==='hard'&&G.loan>0){const int=G.loan===25?3.75:G.loan===50?10:0;loanRepay=G.loan+int;G.cash=+(G.cash-loanRepay).toFixed(2);}
+  const net=+(G.cash-20).toFixed(2);
+  let gr,lb,zt;
+  if(net>=50){gr='A+';lb='Lemon Empire Builder';zt='You turned $20 into serious money. Wall Street is taking notes. You have a gift.';}
+  else if(net>=30){gr='A';lb='Business Boss';zt='Impressive profit and sharp decisions. Have you considered franchising this operation?';}
+  else if(net>=18){gr='B+';lb='Solid Entrepreneur';zt='Good work. You made money and learned the ropes. A few tighter decisions and you\'re in A territory.';}
+  else if(net>=8){gr='B';lb='Rising Business Mind';zt='You made money — which is more than many first-time entrepreneurs can say. Well done.';}
+  else if(net>=0){gr='C';lb='You Survived';zt='You didn\'t lose money. The market will be kinder next time — especially with what you know now.';}
+  else if(net>=-15){gr='D';lb='Tough Week';zt='Some rough days, some rough decisions. You now know exactly what to fix. Play again?';}
+  else{gr='F';lb='Financial Disaster';zt='This is why we practice in school before real life. You just learned more about business than most adults know. Play again immediately.';}
+  if(net>=20)SND.fanfare();else if(net<-5)SND.loss();else SND.cash();
+  el('ov-scene').innerHTML=net>=10?SC.trophy:net<-5?SC.lossface:SC.profitface;
+  el('fo-grade').textContent=gr;el('fo-grade').className='grade '+(net>=0?'gn':'rd');
+  el('fo-lbl').textContent=lb;el('fo-stand').textContent=G.stand;el('fo-zesty').textContent=zt;
+  el('fo-nm').textContent=G.name;el('fo-cl').textContent=G.cls;
+  el('fo-diff').textContent=DIFFS[G.diff].lbl+' — '+G.days+' days';el('fo-days').textContent=G.days+' days';
+  const lr=el('fo-lrow'),rr=el('fo-rrow');
+  if(G.loan>0){lr.style.display='flex';rr.style.display='flex';el('fo-ltk').textContent=f(G.loan);el('fo-lrp').textContent=f(loanRepay);}else{lr.style.display='none';rr.style.display='none';}
+  el('fo-rev').textContent=f(G.totRev);el('fo-exp').textContent=f(G.totCost);
+  const rrow=el('fo-reprow');if(G.diff!=='easy'){rrow.style.display='flex';el('fo-repv').textContent=Math.round(G.rep)+'/100';}else rrow.style.display='none';
+  const pp=el('fo-profit');pp.textContent=f(net);pp.className=net>=0?'gn':'rd';
+  histChart('fo-bars');el('fo-concepts').textContent=DIFFS[G.diff].conc;
+  updHdr();show('s-over');
+  G._final={name:G.name,cls:G.cls,stand:G.stand,diff:DIFFS[G.diff].lbl,profit:net,grade:gr,ts:Date.now()};
+}
+
+function resetGame(){G={};selD='easy';selL=0;el('ghdr').style.display='none';show('s-welcome');}
+
+// LEADERBOARD
+function getLB(){try{return JSON.parse(localStorage.getItem('lb_lsp')||'[]');}catch(e){return[];}}
+function saveLBEntry(e){const lb=getLB();lb.push(e);lb.sort((a,b)=>b.profit-a.profit);lb.splice(20);localStorage.setItem('lb_lsp',JSON.stringify(lb));}
+function saveGoLB(){if(G._final)saveLBEntry(G._final);renderLB('all');show('s-lb');}
+function clearLB(){if(confirm('Clear entire leaderboard? (Teacher reset — cannot be undone)')){{localStorage.removeItem('lb_lsp');renderLB('all');}}}
+
+function renderLB(filter){
+  let entries=getLB();
+  const classes=[...new Set(entries.map(e=>e.cls))];
+  const fb=el('lb-filters');
+  fb.innerHTML='<button class="tbtn'+(filter==='all'?' sl':'')+'" onclick="renderLB(\'all\');document.querySelectorAll(\'#lb-filters .tbtn\').forEach(b=>b.classList.remove(\'sl\'));this.classList.add(\'sl\')">All Classes</button>';
+  classes.forEach(c=>{fb.innerHTML+=`<button class="tbtn${filter===c?' sl':''}" onclick="renderLB('${c}');document.querySelectorAll('#lb-filters .tbtn').forEach(b=>b.classList.remove('sl'));this.classList.add('sl')">${c}</button>`;});
+  if(filter!=='all')entries=entries.filter(e=>e.cls===filter);
+  const tb=el('lb-body');
+  if(!entries.length){tb.innerHTML='<tr><td colspan="7" style="text-align:center;color:var(--gr);padding:2rem;font-family:sans-serif">No scores yet. Be the first!</td></tr>';return;}
+  const md=['🥇','🥈','🥉'];
+  tb.innerHTML=entries.map((e,i)=>`<tr><td style="font-weight:bold">${md[i]||'#'+(i+1)}</td><td>${e.name}</td><td style="font-family:sans-serif;font-size:12px;color:var(--gr)">${e.cls}</td><td style="font-family:sans-serif;font-size:12px">${e.stand}</td><td><span class="chip cha" style="font-size:10px">${e.diff}</span></td><td style="font-family:monospace;font-weight:bold;color:${e.profit>=0?'var(--gn)':'var(--rd)'}">${f(e.profit)}</td><td style="font-weight:bold;font-size:18px">${e.grade}</td></tr>`).join('');
+}
+
+// WORKSHEET
+function printWS(){
+  el('ws-nm').textContent=G.name;el('ws-cl').textContent=G.cls;el('ws-dt').textContent=new Date().toLocaleDateString();
+  el('ws-st').textContent=G.stand;el('ws-di').textContent=DIFFS[G.diff].lbl;
+  const net=+(G.cash-20).toFixed(2);
+  el('ws-pr').textContent=f(net)+(net>=0?' (profit)':' (loss)');
+  el('ws-gr').textContent=el('fo-grade').textContent;
+  const qs=[
+    {q:'What was your stand\'s name and customer attraction strategy?',lines:3},
+    {q:'Describe your BEST day: weather, price, cups made, cups sold, profit. What made it great?',lines:3},
+    {q:'Describe your WORST day: what went wrong? What would you change?',lines:3},
+    {q:'Calculate your break-even point for one day:\n   Total Costs: _____ ÷ Price Per Cup: _____ = Break-Even Cups: _____\n   Did you actually sell that many? What does that tell you?',lines:2},
+    {q:'Describe a random event you faced (competition, supply chain, weather, etc.). What business concept did it teach you?',lines:4},
+    {q:'What would you do differently in weeks 1, 2, and 3 of the game?',lines:3},
+    {q:'The Law of Demand: when price goes UP, demand goes ___. Use actual numbers from your game to prove this.',lines:3},
+    {q:'Marketing ROI = Extra Revenue ÷ Ad Cost × 100%.\n   Pick a day you advertised. Ad Cost: _____ | Extra Customers: _____ | Revenue per Customer: _____ | ROI = _____%',lines:2},
+    {q:'What is reputation capital? How did your reputation score affect your business? Give two specific examples.',lines:4},
+    {q:'If you took a loan: Was it worth it? Show the math. If you didn\'t borrow: Would a loan have helped? Why or why not?',lines:3},
+    {q:'Name THREE business concepts from the game. Explain how each applies to a real business you know (fast food, sports team, app, store, etc.).',lines:5},
+    {q:'What is the single most important thing you learned about running a business from this simulation? Why does it matter in real life?',lines:4},
+  ];
+  el('ws-qs').innerHTML=qs.map((q,i)=>`<div style="margin-bottom:1rem;padding-bottom:.6rem;border-bottom:1px solid #eee"><div style="font-size:12px;font-weight:bold;color:#333;margin-bottom:.4rem;white-space:pre-line">${i+1}. ${q.q}</div>${Array(q.lines).fill('<div style="border-bottom:1px solid #ccc;height:22px;margin-bottom:4px"></div>').join('')}</div>`).join('');
+  show('s-ws');setTimeout(()=>window.print(),200);setTimeout(()=>show('s-over'),800);
+}
+
+function askClaude(){
+  const prompt=`I just played a Lemonade Stand business simulation in my BCIT class (Pennsylvania Middle School). Can you explain the following business concepts we practiced using real-world examples that a middle schooler would understand?\n\nMode: ${DIFFS[G.diff||'easy'].lbl}\nMy stand: "${G.stand||'My Lemonade Stand'}"\nNet result: ${G._final?f(G._final.profit):'unknown'}\n\nConcepts:\n${DIFFS[G.diff||'easy'].conc}\n\nPlease use examples from real businesses like Nike, McDonald's, Spotify, or sports teams. Keep it engaging and fun!`;
+  if(typeof sendPrompt==='function')sendPrompt(prompt);
+  else{const w=window.open('https://claude.ai','_blank');if(w)setTimeout(()=>{try{w.document.querySelector('textarea')&&(w.document.querySelector('textarea').value=prompt);}catch(e){}},2000);}
+}
+</script>
+</body>
+</html>
